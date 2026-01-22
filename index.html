@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>SaXon_UA | World of Tanks Streamer</title>
+  <title>SaXon WOT | World of Tanks Streamer</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
 
@@ -186,7 +186,7 @@
 
     .hero-right {
       flex: 1;
-      min-width: 200px;
+      min-width: 300px;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -198,7 +198,6 @@
       height: auto;
       filter: drop-shadow(0 20px 40px rgba(0,0,0,0.6));
     }
-
 
     .hero h2 {
       font-size: 3.5rem;
@@ -217,7 +216,7 @@
 
     .hero p {
       font-size: 1.2rem;
-      margin-bottom: 30px;
+      margin-bottom: 10px;
       color: var(--grey);
       max-width: 700px;
     }
@@ -225,6 +224,90 @@
     .highlight {
       color: var(--accent);
       font-weight: bold;
+    }
+
+    /* Hero Donate Button */
+    .donate-hero-btn-container {
+      margin: 25px 0 15px;
+    }
+
+    .donate-hero-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 15px;
+      padding: 18px 35px;
+      background: linear-gradient(135deg, var(--primary), #ff5500);
+      color: white;
+      text-decoration: none;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 1.2rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      box-shadow: 0 10px 25px rgba(255, 122, 0, 0.3);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    .donate-hero-btn:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 30px rgba(255, 122, 0, 0.5);
+      background: linear-gradient(135deg, #ff8a00, #ff4400);
+    }
+
+    .donate-hero-btn .btn-text {
+      font-family: 'Orbitron', sans-serif;
+    }
+
+    .donate-hero-btn i {
+      font-size: 1.3rem;
+      transition: transform 0.3s ease;
+    }
+
+    .donate-hero-btn:hover i:first-child {
+      transform: scale(1.2);
+      color: var(--accent);
+    }
+
+    .donate-hero-btn:hover i:last-child {
+      transform: translateX(5px);
+    }
+
+    /* Pulsating Effect */
+    .pulse-effect {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: inherit;
+      border-radius: 50px;
+      z-index: -1;
+      animation: pulse 2s infinite;
+      opacity: 0.7;
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+        opacity: 0.7;
+      }
+      50% {
+        transform: scale(1.05);
+        opacity: 0.4;
+      }
+      100% {
+        transform: scale(1);
+        opacity: 0.7;
+      }
+    }
+
+    .hero-subtext {
+      margin-top: 12px;
+      font-size: 0.95rem;
+      color: var(--grey);
+      font-style: italic;
+      max-width: 500px;
     }
 
     /* Links Section */
@@ -501,6 +584,11 @@
       .hero-image {
         max-width: 300px;
       }
+      
+      .donate-hero-btn {
+        padding: 16px 25px;
+        font-size: 1.1rem;
+      }
     }
 
     @media (max-width: 576px) {
@@ -515,6 +603,16 @@
       .links-grid {
         grid-template-columns: 1fr;
       }
+      
+      .donate-hero-btn {
+        padding: 14px 20px;
+        font-size: 1rem;
+        gap: 10px;
+      }
+      
+      .donate-hero-btn i {
+        font-size: 1.1rem;
+      }
     }
   </style>
 </head>
@@ -528,7 +626,7 @@
           <i class="fas fa-tank"></i>
         </div>
         <div class="logo-text">
-          <h1>Saxon_UA</h1>
+          <h1>SaXon WOT</h1>
           <p>WORLD OF TANKS STREAMER</p>
         </div>
       </div>
@@ -551,8 +649,16 @@
     <div class="hero-bg"></div>
     <div class="container hero-content">
       <div class="hero-left">
-        <h2><span>СТРІМЕР</span> WORLD OF TANKS</h2>
-        <p>Привіт! Мене звати Євгеній, можна просто Жека. Проживаю в УКРАЇНІ, Київська область. Мій нік в грі <span class="highlight">SaXon_UA.</span> Це мій сайт, де Ви зможете знайти всю корисну інформацыю про мене та про мої канали, стріми, тощо.</p>
+
+        <div class="donate-hero-btn-container">
+          <a href="https://saxon.donatik.ua/" class="donate-hero-btn" target="_blank">
+            <span class="pulse-effect"></span>
+            <i class="fas fa-heart"></i>
+            <span class="btn-text">Підтримати стрімера</span>
+            <i class="fas fa-chevron-right"></i>
+          </a>
+          <p class="hero-subtext">Ваша підтримка допомагає розвивати канал та покращувати якість контенту!</p>
+        </div>
         
         <div class="stream-status" style="margin-top: 20px;">
           <div class="status-indicator" id="statusIndicator"></div>
@@ -561,7 +667,7 @@
       </div>
 
       <div class="hero-right">
-        <img src="saxon2.png" alt="Saxon_UA" class="hero-image">
+        <img src="https://raw.githubusercontent.com/SaxonUA/site/main/saxon2.png" alt="Saxon_UA" class="hero-image">
       </div>
     </div>
   </section>
@@ -625,15 +731,7 @@
           <a href="https://t.me/wotsaxon" class="link-btn" target="_blank">Перейти</a>
         </div>
 
-        <!-- About -->
-        <div class="link-card" id="about">
-          <div class="link-icon" style="background: var(--camouflage);">
-            <i class="fas fa-tank"></i>
-          </div>
-          <h3>Про мене</h3>
-          <p>Дізнайся більше про мою ігрову кар'єру та досягнення в World of Tanks</p>
-          <a href="#about" class="link-btn" onclick="showAbout()">Детальніше</a>
-        </div>
+
       </div>
     </div>
   </section>
@@ -672,7 +770,7 @@
             <ul>
               <li><span>Понеділок - П'ятниця</span> <span>20:00 - 00:00</span></li>
               <li><span>Субота</span> <span>20:00 - 02:00</span></li>
-              <li><span>Неділя</span> <span>Вихідний :) </span></li>
+              <li><span>Неділя</span> <span>Вихідний :)</span></li>
             </ul>
             <p style="margin-top: 10px; font-size: 0.9rem; color: var(--grey);">* Час може змінюватись, слідкуйте за оновленнями в соцмережах</p>
           </div>
@@ -709,7 +807,7 @@
         </div>
       </div>
       
-      <p class="copyright">© 2026 Saxon_UA WoT. Всі права захищені.</p>
+      <p class="copyright">© 2026 SaXon WOT WoT. Всі права захищені.</p>
     </div>
   </footer>
 
@@ -786,7 +884,7 @@
     
     // Функція для показу інформації "Про мене"
     function showAbout() {
-      alert(`Saxon_UA - український стрімер World of Tanks\n\nДосвід гри: понад 8 років\nРегіон: Європа\nУлюблені танки: важкі та ПТ-САУ\nСтиль гри: агресивний та тактичний\n\nПриєднуйся до спільноти та слідкуй за стрімами!`);
+      alert(`SaXon WOT - український стрімер World of Tanks\n\nДосвід гри: понад 8 років\nРегіон: Європа\nУлюблені танки: важкі та ПТ-САУ\nСтиль гри: агресивний та тактичний\n\nПриєднуйся до спільноти та слідкуй за стрімами!`);
     }
     
     // Ініціалізація
