@@ -1571,33 +1571,58 @@ async function fetchStreamsFromAPI(maxResults = 3) {
   }
 }
 
-  async function checkLiveStream() {
-    try {
-      const url = `https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${CHANNEL_ID}&part=snippet&type=video&eventType=live&maxResults=1`;
-      
-      const response = await fetch(url);
-      
-      if (!response.ok) {
-        throw new Error(`Помилка API: ${response.status}`);
-      }
-      
-      const data = await response.json();
-      
-      if (data.items && data.items.length > 0) {
-        return {
-          isLive: true,
-          videoId: data.items[0].id.videoId,
-          title: data.items[0].snippet.title,
-          publishedAt: data.items[0].snippet.publishedAt
-        };
-      }
-      
-      return { isLive: false };
-    } catch (error) {
-      console.error('Помилка перевірки живого стріму:', error);
-      return { isLive: false };
+async function checkLiveStream() {
+  try {
+    // 1) беремо uploads playlist
+    const channelUrl = `https://www.googleapis.com/youtube/v3/channels?key=${API_KEY}&id=${CHANNEL_ID}&part=contentDetails`;
+    const channelRes = await fetch(channelUrl);
+    if (!channelRes.ok) throw new Error("channels API error");
+
+    const channelData = await channelRes.json();
+    const uploadsPlaylistId =
+      channelData.items?.[0]?.contentDetails?.relatedPlaylists?.uploads;
+
+    if (!uploadsPlaylistId) return { isLive: false };
+
+    // 2) беремо останній ролик/стрім з плейлиста
+    const playlistUrl = `https://www.googleapis.com/youtube/v3/playlistItems?key=${API_KEY}&playlistId=${uploadsPlaylistId}&part=snippet&maxResults=1`;
+    const playlistRes = await fetch(playlistUrl);
+    if (!playlistRes.ok) throw new Error("playlistItems API error");
+
+    const playlistData = await playlistRes.json();
+    const lastVideoId = playlistData.items?.[0]?.snippet?.resourceId?.videoId;
+
+    if (!lastVideoId) return { isLive: false };
+
+    // 3) перевіряємо liveStreamingDetails
+    const videosUrl = `https://www.googleapis.com/youtube/v3/videos?key=${API_KEY}&part=snippet,liveStreamingDetails&id=${lastVideoId}`;
+    const videosRes = await fetch(videosUrl);
+    if (!videosRes.ok) throw new Error("videos API error");
+
+    const videosData = await videosRes.json();
+    const video = videosData.items?.[0];
+
+    if (!video) return { isLive: false };
+
+    const lsd = video.liveStreamingDetails;
+
+    // якщо є actualStartTime і НЕМАЄ actualEndTime -> стрім йде зараз
+    if (lsd?.actualStartTime && !lsd?.actualEndTime) {
+      return {
+        isLive: true,
+        videoId: video.id,
+        title: video.snippet.title,
+        publishedAt: video.snippet.publishedAt,
+      };
     }
+
+    return { isLive: false };
+  } catch (error) {
+    console.error("Помилка перевірки LIVE:", error);
+    return { isLive: false };
   }
+}
+
 
   function setOfflineUI() {
     statusIndicator.className = "status-indicator";
