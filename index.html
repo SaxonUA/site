@@ -151,7 +151,7 @@
       cursor: pointer;
     }
 
-    /* Hero Section */
+    /* Hero Section - ОБНОВЛЕНО */
     .hero {
       padding: 80px 0 60px;
       position: relative;
@@ -171,11 +171,32 @@
 
     .hero-content {
       display: flex;
-      flex-direction: column;
       align-items: center;
-      text-align: center;
-      max-width: 800px;
+      justify-content: space-between;
+      gap: 40px;
+      max-width: 1200px;
       margin: 0 auto;
+      text-align: left;
+    }
+
+    .hero-left {
+      flex: 1;
+      min-width: 300px;
+    }
+
+    .hero-right {
+      flex: 1;
+      min-width: 300px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .hero-image {
+      max-width: 420px;
+      width: 100%;
+      height: auto;
+      filter: drop-shadow(0 20px 40px rgba(0,0,0,0.6));
     }
 
     .hero h2 {
@@ -466,6 +487,19 @@
       .stream-container {
         flex-direction: column;
       }
+
+      .hero-content {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .hero-right {
+        margin-top: 30px;
+      }
+
+      .hero-image {
+        max-width: 300px;
+      }
     }
 
     @media (max-width: 576px) {
@@ -511,16 +545,22 @@
     </div>
   </header>
 
-  <!-- Hero Section -->
+  <!-- Hero Section - ОБНОВЛЕНО -->
   <section class="hero">
     <div class="hero-bg"></div>
     <div class="container hero-content">
-      <h2><span>СТРІМЕР</span> WORLD OF TANKS</h2>
-      <p>Привіт! Мене звати Євгеній, можна просто Жека. Проживаю в УКРАЇНІ, Київська область. Мій нік в грі <span class="highlight">SaXon_UA.</span> Це мій сайт, де Ви зможете знайти всю корисну інформацыю про мене та про мої канали, стріми, тощо.</p>
-      
-      <div class="stream-status" style="margin-top: 20px;">
-        <div class="status-indicator" id="statusIndicator"></div>
-        <h3 id="statusText">Перевіряю статус трансляції...</h3>
+      <div class="hero-left">
+        <h2><span>СТРІМЕР</span> WORLD OF TANKS</h2>
+        <p>Привіт! Мене звати Євгеній, можна просто Жека. Проживаю в УКРАЇНІ, Київська область. Мій нік в грі <span class="highlight">SaXon_UA.</span> Це мій сайт, де Ви зможете знайти всю корисну інформацыю про мене та про мої канали, стріми, тощо.</p>
+        
+        <div class="stream-status" style="margin-top: 20px;">
+          <div class="status-indicator" id="statusIndicator"></div>
+          <h3 id="statusText">Перевіряю статус трансляції...</h3>
+        </div>
+      </div>
+
+      <div class="hero-right">
+        <img src="saxon.png" alt="Saxon_UA" class="hero-image">
       </div>
     </div>
   </section>
@@ -776,7 +816,7 @@
               behavior: 'smooth'
             });
             
-            // Закриваємо мобільне меню після кліку
+            // Закриваємо мобільне меню під час кліку
             if (window.innerWidth <= 768) {
               navLinks.style.display = 'none';
             }
