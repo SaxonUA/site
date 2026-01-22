@@ -158,40 +158,38 @@
       overflow: hidden;
     }
 
-.hero-bg {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+    .hero-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url("https://raw.githubusercontent.com/SaxonUA/site/main/fon_new.png") center/cover no-repeat;
+      opacity: 0.25;
+      z-index: -1;
+      filter: blur(6px);
+      transform: scale(1.05);
+    }
 
-  background: url("https://raw.githubusercontent.com/SaxonUA/site/main/fon_new.png") center/cover no-repeat;
-  opacity: 0.25;         /* прозорість фону */
-  z-index: -1;
+    .hero-content {
+      display: flex;
+      align-items: center;       
+      justify-content: center; 
+      gap: 80px;               
+      max-width: 1200px;
+      margin: 0 auto;
+      text-align: left;
+    }
 
-  filter: blur(6px);     /* розмиття */
-  transform: scale(1.05);/* щоб розмиття не обрізало краї */
-}
-
-.hero-content {
-  display: flex;
-  align-items: center;       
-  justify-content: center; 
-  gap: 80px;               
-  max-width: 1200px;
-  margin: 0 auto;
-  text-align: left;
-}
-
-.hero-left {
-  flex: 1;
-  min-width: 300px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;  
-  justify-content: center;  
-  gap: 20px;              
-}
+    .hero-left {
+      flex: 1;
+      min-width: 300px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;  
+      justify-content: center;  
+      gap: 20px;              
+    }
 
     .hero-right {
       flex: 1;
@@ -591,9 +589,9 @@
       font-size: 0.8rem;
     }
 
-.stream-section {
-  padding: 60px 0;
-}
+    .stream-section {
+      padding: 60px 0;
+    }
 
     .stream-container {
       display: flex;
@@ -1330,10 +1328,10 @@
           </div>
           
           <p>Приєднуйся до прямої трансляції на YouTube! Коментуй, став питання та спілкуйся з іншими глядачами.</p>
-<a href="#" class="stream-link-btn" id="streamLink">
-  <span>Перейти до стріму</span>
-  <i class="fas fa-arrow-right"></i>
-</a>
+          <a href="#" class="stream-link-btn" id="streamLink">
+            <span>Перейти до стріму</span>
+            <i class="fas fa-arrow-right"></i>
+          </a>
           <div class="schedule">
             <h4><i class="far fa-calendar-alt"></i> РОЗКЛАД СТРІМІВ</h4>
             <ul>
@@ -1491,344 +1489,369 @@
     </div>
   </footer>
 
-<script>
-  const CHANNEL_ID = "UCPMbLC6oJmGVXnMjUNp0CXg";
-  const API_KEY = "AIzaSyA4xawh40f7rgqRgzO5IbANSLCgWV_BnVE";
-  
-  const statusIndicator = document.getElementById("statusIndicator");
-  const statusText = document.getElementById("statusText");
-  const streamIndicator = document.getElementById("streamIndicator");
-  const streamStatusText = document.getElementById("streamStatusText");
-  const streamLink = document.getElementById("streamLink");
-  const playerContainer = document.getElementById("playerContainer");
-  const latestStreamsContainer = document.getElementById("latestStreamsContainer");
+  <script>
+    const CHANNEL_ID = "UCPMbLC6oJmGVXnMjUNp0CXg";
+    const API_KEY = "AIzaSyA4xawh40f7rgqRgzO5IbANSLCgWV_BnVE";
+    
+    const statusIndicator = document.getElementById("statusIndicator");
+    const statusText = document.getElementById("statusText");
+    const streamIndicator = document.getElementById("streamIndicator");
+    const streamStatusText = document.getElementById("streamStatusText");
+    const streamLink = document.getElementById("streamLink");
+    const playerContainer = document.getElementById("playerContainer");
+    const latestStreamsContainer = document.getElementById("latestStreamsContainer");
 
-  function formatDate(dateString) {
-    const date = new Date(dateString);
-    return date.toLocaleDateString("uk-UA", {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-    });
-  }
-
-  function extractVideoIdFromLink(link) {
-    try {
-      const url = new URL(link);
-      return url.searchParams.get("v");
-    } catch {
-      return null;
-    }
-  }
-
-async function fetchStreamsFromAPI(maxResults = 3) {
-  try {
-    const channelUrl = `https://www.googleapis.com/youtube/v3/channels?key=${API_KEY}&id=${CHANNEL_ID}&part=contentDetails`;
-    const channelRes = await fetch(channelUrl);
-    if (!channelRes.ok) throw new Error(`Помилка channels API: ${channelRes.status}`);
-
-    const channelData = await channelRes.json();
-    const uploadsPlaylistId =
-      channelData.items?.[0]?.contentDetails?.relatedPlaylists?.uploads;
-
-    if (!uploadsPlaylistId) return [];
-
-    const playlistUrl = `https://www.googleapis.com/youtube/v3/playlistItems?key=${API_KEY}&playlistId=${uploadsPlaylistId}&part=snippet&maxResults=10`;
-    const playlistRes = await fetch(playlistUrl);
-    if (!playlistRes.ok) throw new Error(`Помилка playlistItems API: ${playlistRes.status}`);
-
-    const playlistData = await playlistRes.json();
-    if (!playlistData.items || playlistData.items.length === 0) return [];
-
-    const videoIds = playlistData.items
-      .map(i => i.snippet?.resourceId?.videoId)
-      .filter(Boolean);
-
-    const videosUrl = `https://www.googleapis.com/youtube/v3/videos?key=${API_KEY}&part=snippet,liveStreamingDetails&id=${videoIds.join(",")}`;
-    const videosRes = await fetch(videosUrl);
-    if (!videosRes.ok) throw new Error(`Помилка videos API: ${videosRes.status}`);
-
-    const videosData = await videosRes.json();
-    if (!videosData.items || videosData.items.length === 0) return [];
-
-    let result = videosData.items.filter(v => v.liveStreamingDetails?.actualStartTime);
-
-    if (result.length === 0) result = videosData.items;
-
-    return result.slice(0, maxResults).map(v => ({
-      videoId: v.id,
-      title: v.snippet.title,
-      publishedAt: v.snippet.publishedAt,
-      thumbnail:
-        v.snippet.thumbnails.high?.url ||
-        v.snippet.thumbnails.medium?.url ||
-        v.snippet.thumbnails.default?.url,
-      link: `https://www.youtube.com/watch?v=${v.id}`,
-    }));
-  } catch (error) {
-    console.error("Помилка завантаження:", error);
-    return null;
-  }
-}
-
-async function checkLiveStream() {
-  try {
-    // 1) беремо uploads playlist
-    const channelUrl = `https://www.googleapis.com/youtube/v3/channels?key=${API_KEY}&id=${CHANNEL_ID}&part=contentDetails`;
-    const channelRes = await fetch(channelUrl);
-    if (!channelRes.ok) throw new Error("channels API error");
-
-    const channelData = await channelRes.json();
-    const uploadsPlaylistId =
-      channelData.items?.[0]?.contentDetails?.relatedPlaylists?.uploads;
-
-    if (!uploadsPlaylistId) return { isLive: false };
-
-    // 2) беремо останній ролик/стрім з плейлиста
-    const playlistUrl = `https://www.googleapis.com/youtube/v3/playlistItems?key=${API_KEY}&playlistId=${uploadsPlaylistId}&part=snippet&maxResults=1`;
-    const playlistRes = await fetch(playlistUrl);
-    if (!playlistRes.ok) throw new Error("playlistItems API error");
-
-    const playlistData = await playlistRes.json();
-    const lastVideoId = playlistData.items?.[0]?.snippet?.resourceId?.videoId;
-
-    if (!lastVideoId) return { isLive: false };
-
-    // 3) перевіряємо liveStreamingDetails
-    const videosUrl = `https://www.googleapis.com/youtube/v3/videos?key=${API_KEY}&part=snippet,liveStreamingDetails&id=${lastVideoId}`;
-    const videosRes = await fetch(videosUrl);
-    if (!videosRes.ok) throw new Error("videos API error");
-
-    const videosData = await videosRes.json();
-    const video = videosData.items?.[0];
-
-    if (!video) return { isLive: false };
-
-    const lsd = video.liveStreamingDetails;
-
-    // якщо є actualStartTime і НЕМАЄ actualEndTime -> стрім йде зараз
-    if (lsd?.actualStartTime && !lsd?.actualEndTime) {
-      return {
-        isLive: true,
-        videoId: video.id,
-        title: video.snippet.title,
-        publishedAt: video.snippet.publishedAt,
-      };
+    // Функция для форматирования даты
+    function formatDate(dateString) {
+      const date = new Date(dateString);
+      return date.toLocaleDateString("uk-UA", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      });
     }
 
-    return { isLive: false };
-  } catch (error) {
-    console.error("Помилка перевірки LIVE:", error);
-    return { isLive: false };
-  }
-}
+    // Основная функция проверки онлайн-статуса
+    async function checkLiveStream() {
+      try {
+        // Проверяем активные трансляции
+        const searchUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CHANNEL_ID}&eventType=live&type=video&key=${API_KEY}`;
+        const searchRes = await fetch(searchUrl);
+        
+        if (!searchRes.ok) {
+          console.error("Ошибка при проверке live статуса:", searchRes.status);
+          return { isLive: false };
+        }
+        
+        const searchData = await searchRes.json();
+        
+        // Если есть активная трансляция
+        if (searchData.items && searchData.items.length > 0) {
+          const liveVideo = searchData.items[0];
+          return {
+            isLive: true,
+            videoId: liveVideo.id.videoId,
+            title: liveVideo.snippet.title,
+            publishedAt: liveVideo.snippet.publishedAt,
+          };
+        }
+        
+        return { isLive: false };
+      } catch (error) {
+        console.error("Помилка перевірки LIVE:", error);
+        return { isLive: false };
+      }
+    }
 
+    // Функция для получения последних видео (стримов)
+    async function fetchLatestStreams(maxResults = 3) {
+      try {
+        // Получаем последние видео с канала
+        const searchUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CHANNEL_ID}&type=video&eventType=completed&maxResults=${maxResults * 2}&order=date&key=${API_KEY}`;
+        const searchRes = await fetch(searchUrl);
+        
+        if (!searchRes.ok) {
+          console.error("Ошибка при получении видео:", searchRes.status);
+          return null;
+        }
+        
+        const searchData = await searchRes.json();
+        
+        if (!searchData.items || searchData.items.length === 0) {
+          return [];
+        }
+        
+        // Получаем детальную информацию о видео
+        const videoIds = searchData.items.map(item => item.id.videoId).join(",");
+        const videosUrl = `https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails,statistics,liveStreamingDetails&id=${videoIds}&key=${API_KEY}`;
+        const videosRes = await fetch(videosUrl);
+        const videosData = await videosRes.json();
+        
+        // Фильтруем только стримы (длительность > 30 минут или есть liveStreamingDetails)
+        const streams = videosData.items.filter(video => {
+          // Проверяем по длительности (стримы обычно длинные)
+          const duration = video.contentDetails?.duration;
+          const isLongVideo = duration && (
+            duration.includes('H') || // содержит часы
+            (duration.includes('M') && parseInt(duration) > 30) // больше 30 минут
+          );
+          
+          // Или проверяем по liveStreamingDetails
+          const hasLiveDetails = video.liveStreamingDetails;
+          
+          return isLongVideo || hasLiveDetails;
+        }).slice(0, maxResults);
+        
+        return streams.map(video => ({
+          videoId: video.id,
+          title: video.snippet.title,
+          publishedAt: video.snippet.publishedAt,
+          thumbnail: video.snippet.thumbnails.high?.url || video.snippet.thumbnails.medium?.url || video.snippet.thumbnails.default?.url,
+          link: `https://www.youtube.com/watch?v=${video.id}`,
+        }));
+      } catch (error) {
+        console.error("Помилка завантаження стрімів:", error);
+        return null;
+      }
+    }
 
-  function setOfflineUI() {
-    statusIndicator.className = "status-indicator";
-    statusText.innerHTML = "⚫ <strong>ЗАРАЗ ОФЛАЙН</strong>";
-    
-    streamIndicator.className = "status-indicator";
-    streamStatusText.innerHTML = "<strong>ЗАРАЗ ОФЛАЙН</strong>";
-    
-    document.getElementById("streamSubtitle").innerHTML = '<i class="fas fa-circle"></i> ОФЛАЙН';
-    document.getElementById("streamSubText").textContent = "Наступний стрім за розкладом";
-    
-    document.getElementById("playerLabel").innerHTML = '<i class="fas fa-video"></i> Останній стрім';
-    document.getElementById("playerLabel").classList.remove("live");
+    // Функция для получения последних видео (без фильтрации на стримы)
+    async function fetchLatestVideos(maxResults = 3) {
+      try {
+        // Простой запрос для получения последних видео
+        const searchUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CHANNEL_ID}&type=video&maxResults=${maxResults}&order=date&key=${API_KEY}`;
+        const searchRes = await fetch(searchUrl);
+        
+        if (!searchRes.ok) {
+          console.error("Ошибка при получении видео:", searchRes.status);
+          return null;
+        }
+        
+        const searchData = await searchRes.json();
+        
+        if (!searchData.items || searchData.items.length === 0) {
+          return [];
+        }
+        
+        return searchData.items.map(item => ({
+          videoId: item.id.videoId,
+          title: item.snippet.title,
+          publishedAt: item.snippet.publishedAt,
+          thumbnail: item.snippet.thumbnails.high?.url || item.snippet.thumbnails.medium?.url || item.snippet.thumbnails.default?.url,
+          link: `https://www.youtube.com/watch?v=${item.id.videoId}`,
+        }));
+      } catch (error) {
+        console.error("Помилка завантаження відео:", error);
+        return null;
+      }
+    }
 
-    streamLink.href = `https://www.youtube.com/@saxonuawot/live`;
-    streamLink.innerHTML = `<span>Перейти до стріму</span> <i class="fas fa-arrow-right"></i>`;
-  }
-
-  function setLiveUI() {
-    statusIndicator.className = "status-indicator live";
-    statusText.innerHTML = "🔴 <strong>LIVE ЗАРАЗ!</strong>";
-    
-    streamIndicator.className = "status-indicator live";
-    streamStatusText.innerHTML = "<strong>LIVE ЗАРАЗ!</strong>";
-    
-    document.getElementById("streamSubtitle").innerHTML = '<i class="fas fa-circle" style="color: #ff3333;"></i> LIVE ЗАРАЗ';
-    document.getElementById("streamSubText").textContent = "Пряма трансляція на YouTube";
-    
-    document.getElementById("playerLabel").innerHTML = '<i class="fas fa-broadcast-tower"></i> LIVE зараз';
-    document.getElementById("playerLabel").classList.add("live");
-
-    streamLink.href = `https://www.youtube.com/@saxonuawot/live`;
-    streamLink.innerHTML = `<span>Дивитись LIVE</span> <i class="fas fa-arrow-right"></i>`;
-  }
-
-  async function renderPlayerWithLatestStream() {
-    const liveStatus = await checkLiveStream();
-    
-    if (liveStatus.isLive) {
-      setLiveUI();
+    // Установка UI для офлайн статуса
+    function setOfflineUI() {
+      statusIndicator.className = "status-indicator";
+      statusText.innerHTML = "⚫ <strong>ЗАРАЗ ОФЛАЙН</strong>";
       
+      streamIndicator.className = "status-indicator";
+      streamStatusText.innerHTML = "<strong>ЗАРАЗ ОФЛАЙН</strong>";
+      
+      document.getElementById("streamSubtitle").innerHTML = '<i class="fas fa-circle"></i> ОФЛАЙН';
+      document.getElementById("streamSubText").textContent = "Наступний стрім за розкладом";
+      
+      document.getElementById("playerLabel").innerHTML = '<i class="fas fa-video"></i> Останній стрім';
+      document.getElementById("playerLabel").classList.remove("live");
+
+      streamLink.href = `https://www.youtube.com/@saxonuawot/live`;
+      streamLink.innerHTML = `<span>Перейти до стріму</span> <i class="fas fa-arrow-right"></i>`;
+    }
+
+    // Установка UI для онлайн статуса
+    function setLiveUI(liveData) {
+      statusIndicator.className = "status-indicator live";
+      statusText.innerHTML = "🔴 <strong>LIVE ЗАРАЗ!</strong>";
+      
+      streamIndicator.className = "status-indicator live";
+      streamStatusText.innerHTML = "<strong>LIVE ЗАРАЗ!</strong>";
+      
+      document.getElementById("streamSubtitle").innerHTML = '<i class="fas fa-circle" style="color: #ff3333;"></i> LIVE ЗАРАЗ';
+      document.getElementById("streamSubText").textContent = "Пряма трансляція на YouTube";
+      
+      document.getElementById("playerLabel").innerHTML = '<i class="fas fa-broadcast-tower"></i> LIVE зараз';
+      document.getElementById("playerLabel").classList.add("live");
+
+      // Встраивание live трансляции
       playerContainer.innerHTML = `
         <iframe 
           width="100%" 
           height="100%" 
-          src="https://www.youtube.com/embed/${liveStatus.videoId}?autoplay=0&mute=1" 
+          src="https://www.youtube.com/embed/${liveData.videoId}?autoplay=0&mute=1" 
           frameborder="0" 
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
           allowfullscreen
-          title="${liveStatus.title}">
+          title="${liveData.title}">
         </iframe>
       `;
       
-      streamLink.href = `https://www.youtube.com/watch?v=${liveStatus.videoId}`;
-      return;
+      streamLink.href = `https://www.youtube.com/watch?v=${liveData.videoId}`;
+      streamLink.innerHTML = `<span>Дивитись LIVE</span> <i class="fas fa-arrow-right"></i>`;
     }
-    
-    setOfflineUI();
-    const streams = await fetchStreamsFromAPI(1);
-    
-    if (streams && streams.length > 0) {
-      const latestStream = streams[0];
-      
-      playerContainer.innerHTML = `
-        <iframe 
-          width="100%" 
-          height="100%" 
-          src="https://www.youtube.com/embed/${latestStream.videoId}?autoplay=0&mute=1" 
-          frameborder="0" 
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-          allowfullscreen
-          title="${latestStream.title}">
-        </iframe>
-      `;
-      
-      streamLink.href = latestStream.link;
-      streamLink.innerHTML = `<span>Дивитись останній стрім</span> <i class="fas fa-arrow-right"></i>`;
-    } else {
-      playerContainer.innerHTML = `
-        <div style="text-align: center; padding: 40px;">
-          <i class="fas fa-video-slash" style="font-size: 60px; color: var(--grey); margin-bottom: 20px;"></i>
-          <h3>Немає доступних стрімів</h3>
-          <p>Перейдіть на канал для перегляду контенту</p>
-          <a href="https://www.youtube.com/@saxonuawot" class="link-btn" style="margin-top: 20px;">Перейти на канал</a>
-        </div>
-      `;
-    }
-  }
 
-  async function renderLatestStreams() {
-    latestStreamsContainer.innerHTML = `
-      <div class="loading" style="grid-column: 1 / -1;">
-        <div class="loading-spinner"></div>
-        <p>Завантаження стрімів...</p>
-      </div>
-    `;
-
-    const streams = await fetchStreamsFromAPI(3);
-    
-    if (streams === null) {
-      latestStreamsContainer.innerHTML = `
-        <div class="api-error" style="grid-column: 1 / -1;">
-          <i class="fas fa-exclamation-triangle"></i>
-          <h3>Не вдалося завантажити стріми</h3>
-          <p>Перевірте підключення до інтернету або спробуйте пізніше.</p>
-          <a href="https://www.youtube.com/@saxonuawot/streams" class="link-btn" target="_blank" style="margin-top: 15px;">
-            <i class="fab fa-youtube"></i> Дивитися стріми на YouTube
-          </a>
-        </div>
-      `;
-      return;
-    }
-    
-    if (streams.length === 0) {
-      latestStreamsContainer.innerHTML = `
-        <div style="grid-column: 1 / -1; text-align: center; padding: 40px;">
-          <i class="fas fa-video-slash" style="font-size: 60px; color: var(--grey); margin-bottom: 20px;"></i>
-          <h3>Завершених стрімів ще немає</h3>
-          <p>Перший стрім з'явиться тут після його завершення.</p>
-          <a href="https://www.youtube.com/@saxonuawot" class="link-btn" target="_blank" style="margin-top: 15px;">
-            <i class="fab fa-youtube"></i> Перейти на канал
-          </a>
-        </div>
-      `;
-      return;
-    }
-    
-    let html = '';
-    
-    streams.forEach((stream) => {
-      html += `
-        <div class="stream-card">
-          <div class="stream-thumbnail">
-            <img src="${stream.thumbnail}" alt="${stream.title}" loading="lazy">
-            <div class="stream-duration">
-              <i class="fas fa-broadcast-tower"></i> СТРІМ
-            </div>
+    // Рендер последнего видео/стрима в плеере
+    async function renderPlayerWithLatestVideo() {
+      // Сначала проверяем live статус
+      const liveStatus = await checkLiveStream();
+      
+      if (liveStatus.isLive) {
+        setLiveUI(liveStatus);
+        return;
+      }
+      
+      // Если не в live, показываем последнее видео
+      setOfflineUI();
+      const latestVideos = await fetchLatestVideos(1);
+      
+      if (latestVideos && latestVideos.length > 0) {
+        const latestVideo = latestVideos[0];
+        
+        playerContainer.innerHTML = `
+          <iframe 
+            width="100%" 
+            height="100%" 
+            src="https://www.youtube.com/embed/${latestVideo.videoId}?autoplay=0&mute=1" 
+            frameborder="0" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+            allowfullscreen
+            title="${latestVideo.title}">
+          </iframe>
+        `;
+        
+        streamLink.href = latestVideo.link;
+        streamLink.innerHTML = `<span>Дивитись останнє відео</span> <i class="fas fa-arrow-right"></i>`;
+      } else {
+        // Если видео не загрузились
+        playerContainer.innerHTML = `
+          <div style="text-align: center; padding: 40px;">
+            <i class="fas fa-video-slash" style="font-size: 60px; color: var(--grey); margin-bottom: 20px;"></i>
+            <h3>Немає доступних відео</h3>
+            <p>Перейдіть на канал для перегляду контенту</p>
+            <a href="https://www.youtube.com/@saxonuawot" class="link-btn" style="margin-top: 20px;">Перейти на канал</a>
           </div>
-          <div class="stream-info-content">
-            <h4>${stream.title}</h4>
-            <div class="stream-meta">
-              <div class="stream-date">
-                <i class="far fa-calendar"></i> ${formatDate(stream.publishedAt)}
-              </div>
-            </div>
-            <a href="${stream.link}" class="stream-card-btn" target="_blank">
-              <span>Дивитись запис</span>
-              <i class="fas fa-play"></i>
+        `;
+      }
+    }
+
+    // Рендер последних стримов
+    async function renderLatestStreams() {
+      latestStreamsContainer.innerHTML = `
+        <div class="loading" style="grid-column: 1 / -1;">
+          <div class="loading-spinner"></div>
+          <p>Завантаження стрімів...</p>
+        </div>
+      `;
+
+      // Пытаемся получить стримы
+      let streams = await fetchLatestStreams(3);
+      
+      // Если не получилось получить стримы, показываем последние видео
+      if (!streams || streams.length === 0) {
+        streams = await fetchLatestVideos(3);
+      }
+      
+      if (streams === null) {
+        latestStreamsContainer.innerHTML = `
+          <div class="api-error" style="grid-column: 1 / -1;">
+            <i class="fas fa-exclamation-triangle"></i>
+            <h3>Не вдалося завантажити відео</h3>
+            <p>Перевірте підключення до інтернету або спробуйте пізніше.</p>
+            <a href="https://www.youtube.com/@saxonuawot/videos" class="link-btn" target="_blank" style="margin-top: 15px;">
+              <i class="fab fa-youtube"></i> Дивитися відео на YouTube
             </a>
           </div>
-        </div>
-      `;
-    });
-    
-    latestStreamsContainer.innerHTML = html;
-  }
-
-  async function initialize() {
-    await renderPlayerWithLatestStream();
-    await renderLatestStreams();
-  }
-
-  function setupMobileMenu() {
-    const mobileMenuBtn = document.querySelector(".mobile-menu-btn");
-    const navLinks = document.querySelector(".nav-links");
-
-    mobileMenuBtn.addEventListener("click", () => {
-      navLinks.style.display = navLinks.style.display === "flex" ? "none" : "flex";
-    });
-
-    document.querySelectorAll(".nav-links a").forEach((link) => {
-      link.addEventListener("click", () => {
-        if (window.innerWidth <= 768) {
-          navLinks.style.display = "none";
-        }
+        `;
+        return;
+      }
+      
+      if (streams.length === 0) {
+        latestStreamsContainer.innerHTML = `
+          <div style="grid-column: 1 / -1; text-align: center; padding: 40px;">
+            <i class="fas fa-video-slash" style="font-size: 60px; color: var(--grey); margin-bottom: 20px;"></i>
+            <h3>Відео ще немає</h3>
+            <p>Перше відео з'явиться тут після публікації.</p>
+            <a href="https://www.youtube.com/@saxonuawot" class="link-btn" target="_blank" style="margin-top: 15px;">
+              <i class="fab fa-youtube"></i> Перейти на канал
+            </a>
+          </div>
+        `;
+        return;
+      }
+      
+      let html = '';
+      
+      streams.forEach((stream) => {
+        html += `
+          <div class="stream-card">
+            <div class="stream-thumbnail">
+              <img src="${stream.thumbnail}" alt="${stream.title}" loading="lazy">
+              <div class="stream-duration">
+                <i class="fas fa-play-circle"></i> ВІДЕО
+              </div>
+            </div>
+            <div class="stream-info-content">
+              <h4>${stream.title}</h4>
+              <div class="stream-meta">
+                <div class="stream-date">
+                  <i class="far fa-calendar"></i> ${formatDate(stream.publishedAt)}
+                </div>
+              </div>
+              <a href="${stream.link}" class="stream-card-btn" target="_blank">
+                <span>Дивитись</span>
+                <i class="fas fa-play"></i>
+              </a>
+            </div>
+          </div>
+        `;
       });
-    });
-  }
+      
+      latestStreamsContainer.innerHTML = html;
+    }
 
-  function setupSmoothScroll() {
-    document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
-      anchor.addEventListener("click", function (e) {
-        if (this.getAttribute("href") === "#") return;
-
-        e.preventDefault();
-        const targetId = this.getAttribute("href");
-        const targetElement = document.querySelector(targetId);
-
-        if (targetElement) {
-          window.scrollTo({
-            top: targetElement.offsetTop - 80,
-            behavior: "smooth",
-          });
+    // Инициализация
+    async function initialize() {
+      await renderPlayerWithLatestVideo();
+      await renderLatestStreams();
+      
+      // Обновляем статус каждые 30 секунд
+      setInterval(async () => {
+        const liveStatus = await checkLiveStream();
+        if (liveStatus.isLive) {
+          setLiveUI(liveStatus);
         }
+      }, 30000); // 30 секунд
+    }
+
+    // Мобильное меню
+    function setupMobileMenu() {
+      const mobileMenuBtn = document.querySelector(".mobile-menu-btn");
+      const navLinks = document.querySelector(".nav-links");
+
+      mobileMenuBtn.addEventListener("click", () => {
+        navLinks.style.display = navLinks.style.display === "flex" ? "none" : "flex";
       });
+
+      document.querySelectorAll(".nav-links a").forEach((link) => {
+        link.addEventListener("click", () => {
+          if (window.innerWidth <= 768) {
+            navLinks.style.display = "none";
+          }
+        });
+      });
+    }
+
+    // Плавная прокрутка
+    function setupSmoothScroll() {
+      document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+        anchor.addEventListener("click", function (e) {
+          if (this.getAttribute("href") === "#") return;
+
+          e.preventDefault();
+          const targetId = this.getAttribute("href");
+          const targetElement = document.querySelector(targetId);
+
+          if (targetElement) {
+            window.scrollTo({
+              top: targetElement.offsetTop - 80,
+              behavior: "smooth",
+            });
+          }
+        });
+      });
+    }
+
+    // Запуск при загрузке страницы
+    document.addEventListener("DOMContentLoaded", () => {
+      setupMobileMenu();
+      setupSmoothScroll();
+      initialize();
     });
-  }
-
-  document.addEventListener("DOMContentLoaded", () => {
-    setupMobileMenu();
-    setupSmoothScroll();
-    initialize();
-
-    setInterval(initialize, 30 * 60 * 1000);
-  });
-</script>
-
+  </script>
 </body>
 </html>
