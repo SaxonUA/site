@@ -166,11 +166,11 @@
   height: 100%;
 
   background: url("https://raw.githubusercontent.com/SaxonUA/site/main/fon_new.png") center/cover no-repeat;
-  opacity: 0.25;        
+  opacity: 0.25;         /* прозорість фону */
   z-index: -1;
 
-  filter: blur(6px);    
-  transform: scale(1.05);
+  filter: blur(6px);     /* розмиття */
+  transform: scale(1.05);/* щоб розмиття не обрізало краї */
 }
 
 .hero-content {
@@ -376,7 +376,10 @@
     @media (min-width: 577px) {
       .links-grid {
         grid-template-columns: repeat(2, 1fr);
+        max-width: 600px;
+        margin: 40px auto 0;
       }
+      
       .donate-card {
         grid-column: span 2;
       }
@@ -386,6 +389,7 @@
       .links-grid {
         grid-template-columns: 1fr;
       }
+      
       .donate-card {
         grid-column: 1;
       }
@@ -394,7 +398,7 @@
     .link-card {
       background: rgba(29, 53, 87, 0.5);
       border-radius: 10px;
-      padding: 30px 20px;
+      padding: 25px 15px;
       text-align: center;
       transition: all 0.3s ease;
       border: 2px solid transparent;
@@ -402,6 +406,9 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
+      width: 100%;
+      max-width: 280px;
+      margin: 0 auto;
     }
 
     .link-card:hover {
@@ -411,32 +418,33 @@
     }
 
     .link-icon {
-      width: 70px;
-      height: 70px;
+      width: 60px;
+      height: 60px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 28px;
-      margin-bottom: 20px;
+      font-size: 24px;
+      margin-bottom: 15px;
       background: var(--camouflage);
       color: var(--light);
     }
 
     .link-card h3 {
       margin-bottom: 10px;
-      font-size: 1.3rem;
+      font-size: 1.2rem;
     }
 
     .link-card p {
       color: var(--grey);
-      font-size: 0.9rem;
-      margin-bottom: 20px;
+      font-size: 0.85rem;
+      margin-bottom: 15px;
+      line-height: 1.4;
     }
 
     .link-btn {
       display: inline-block;
-      padding: 10px 25px;
+      padding: 8px 20px;
       background-color: var(--primary);
       color: white;
       text-decoration: none;
@@ -444,8 +452,9 @@
       font-weight: bold;
       transition: all 0.3s;
       text-transform: uppercase;
-      font-size: 0.9rem;
+      font-size: 0.8rem;
       letter-spacing: 1px;
+      min-width: 120px;
     }
 
     .link-btn:hover {
@@ -456,6 +465,7 @@
     .donate-card {
       background: linear-gradient(135deg, rgba(230, 57, 70, 0.1), rgba(255, 209, 102, 0.1));
       border: 2px solid var(--primary);
+      max-width: 560px;
     }
 
     .pc-section {
