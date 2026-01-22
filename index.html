@@ -369,6 +369,24 @@
       margin-top: 40px;
     }
 
+    @media (min-width: 577px) {
+      .links-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .donate-card {
+        grid-column: span 2;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .links-grid {
+        grid-template-columns: 1fr;
+      }
+      .donate-card {
+        grid-column: 1;
+      }
+    }
+
     .link-card {
       background: rgba(29, 53, 87, 0.5);
       border-radius: 10px;
@@ -1214,15 +1232,6 @@
       </div>
 
       <div class="links-grid">
-        <div class="link-card">
-          <div class="link-icon" style="background: linear-gradient(135deg, #FF0000, #CC0000);">
-            <i class="fab fa-youtube"></i>
-          </div>
-          <h3>YouTube</h3>
-          <p>Основна платформа для стрімів та відео. Підписуйся та вмикай сповіщення!</p>
-          <a href="https://www.youtube.com/@saxonuawot" class="link-btn" target="_blank">Перейти</a>
-        </div>
-
         <div class="link-card donate-card" id="donate">
           <div class="link-icon" style="background: linear-gradient(135deg, #ffd166, #e9c46a);">
             <i class="fas fa-donate"></i>
@@ -1230,6 +1239,15 @@
           <h3>Донат</h3>
           <p>Підтримай мій канал та допоможи покращувати якість контенту</p>
           <a href="https://saxon.donatik.ua/" class="link-btn" target="_blank">Підтримати</a>
+        </div>
+
+        <div class="link-card">
+          <div class="link-icon" style="background: linear-gradient(135deg, #FF0000, #CC0000);">
+            <i class="fab fa-youtube"></i>
+          </div>
+          <h3>YouTube</h3>
+          <p>Основна платформа для стрімів та відео. Підписуйся та вмикай сповіщення!</p>
+          <a href="https://www.youtube.com/@saxonuawot" class="link-btn" target="_blank">Перейти</a>
         </div>
 
         <div class="link-card">
