@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SaxonUA WoT</title>
+
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: url("bg.jpg") center/cover no-repeat fixed;
+      min-height: 100vh;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+    .overlay {
+      width: 100%;
+      max-width: 700px;
+      backdrop-filter: blur(10px);
+      background: rgba(0,0,0,0.45);
+      border-radius: 22px;
+      padding: 25px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.45);
+    }
+    h1 {
+      margin: 0 0 6px;
+      font-size: 38px;
+      letter-spacing: 0.5px;
+    }
+    .subtitle {
+      margin: 0 0 18px;
+      opacity: 0.85;
+      font-size: 14px;
+    }
+
+    .btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      width: 100%;
+      background: white;
+      color: black;
+      text-decoration: none;
+      padding: 18px;
+      border-radius: 999px;
+      font-weight: 800;
+      margin: 12px 0;
+      transition: 0.2s;
+    }
+    .btn:hover { transform: scale(1.02); }
+
+    .donate { background: #111; color: white; }
+    .livebox {
+      margin-top: 18px;
+      background: rgba(255,255,255,0.12);
+      border-radius: 18px;
+      padding: 16px;
+      text-align: left;
+    }
+    .status {
+      font-weight: 800;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: gray;
+    }
+    .dot.live { background: red; box-shadow: 0 0 10px red; }
+
+    iframe {
+      width: 100%;
+      height: 340px;
+      border: 0;
+      border-radius: 14px;
+      display: none;
+      margin-top: 10px;
+    }
+    .small {
+      opacity: 0.8;
+      font-size: 13px;
+      margin-top: 10px;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="overlay">
+    <h1>SaxonUA WoT</h1>
+    <div class="subtitle">Links • Донат • YouTube Live</div>
+
+    <!-- КНОПКИ -->
+    <a class="btn donate" href="https://saxon.donatik.ua/" target="_blank">
+      💳 ДОНАТ (Donatik)
+    </a>
+
+    <a class="btn" href="https://www.youtube.com/@saxonuawot" target="_blank">
+      ▶️ YouTube
+    </a>
+
+    <a class="btn" href="https://www.twitch.tv/saxon_wot" target="_blank">
+      🟣 Twitch
+    </a>
+
+    <a class="btn" href="https://www.tiktok.com/@saxon_ua_wot" target="_blank">
+      🎵 TikTok
+    </a>
+
+    <a class="btn" href="https://t.me/wotsaxon" target="_blank">
+      ✈️ Telegram
+    </a>
+
+    <!-- LIVE БЛОК -->
+    <div class="livebox">
+      <div class="status">
+        <span id="dot" class="dot"></span>
+        <span id="statusText">Перевіряю YouTube Live...</span>
+      </div>
+
+      <a id="openStreamBtn" class="btn" style="display:none;" target="_blank">Відкрити стрім</a>
+
+      <iframe id="player" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+
+      <div class="small">Автоперевірка кожні 30 секунд</div>
+    </div>
+  </div>
+
+<script>
+  // ==========================
+  // НАЛАШТУВАННЯ
+  // ==========================
+  // ВАЖЛИВО: потрібен YouTube Channel ID (вигляд: UCxxxxxx)
+  // Я не можу гарантувати правильний ID тільки по @нікнейму.
+  // Тому: встав свій Channel ID нижче.
+  const YOUTUBE_CHANNEL_ID = "PASTE_YOUR_CHANNEL_ID_HERE";
+  const API_KEY = "PASTE_YOUR_YOUTUBE_API_KEY_HERE";
+
+  // ==========================
+  // ЛОГІКА
+  // ==========================
+  const statusText = document.getElementById("statusText");
+  const dot = document.getElementById("dot");
+  const openStreamBtn = document.getElementById("openStreamBtn");
+  const player = document.getElementById("player");
+
+  async function checkLive() {
+    try {
+      statusText.textContent = "Перевіряю YouTube Live...";
+      dot.classList.remove("live");
+
+      const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${YOUTUBE_CHANNEL_ID}&eventType=live&type=video&key=${API_KEY}`;
+      const res = await fetch(url);
+      const data = await res.json();
+
+      if (data.items && data.items.length > 0) {
+        const videoId = data.items[0].id.videoId;
+
+        statusText.textContent = "🔴 ЗАРАЗ В ЕФІРІ!";
+        dot.classList.add("live");
+
+        const watchUrl = `https://www.youtube.com/watch?v=${videoId}`;
+        openStreamBtn.href = watchUrl;
+        openStreamBtn.textContent = "Відкрити стрім на YouTube";
+        openStreamBtn.style.display = "flex";
+
+        player.src = `https://www.youtube.com/embed/${videoId}?autoplay=0`;
+        player.style.display = "block";
+      } else {
+        statusText.textContent = "⚫ Зараз офлайн";
+        openStreamBtn.style.display = "flex";
+        openStreamBtn.textContent = "Відкрити канал YouTube";
+        openStreamBtn.href = "https://www.youtube.com/@saxonuawot";
+        player.style.display = "none";
+        player.src = "";
+      }
+    } catch (e) {
+      statusText.textContent = "Помилка перевірки YouTube Live 😢";
+      openStreamBtn.style.display = "flex";
+      openStreamBtn.textContent = "Відкрити канал YouTube";
+      openStreamBtn.href = "https://www.youtube.com/@saxonuawot";
+      player.style.display = "none";
+      player.src = "";
+    }
+  }
+
+  checkLive();
+  setInterval(checkLive, 30000);
+</script>
+</body>
+</html>
