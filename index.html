@@ -248,7 +248,6 @@
       font-size: 1.3rem;
       letter-spacing: 1.5px;
       text-transform: uppercase;
-
       transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       position: relative;
       overflow: hidden;
@@ -256,21 +255,8 @@
       font-family: 'Orbitron', sans-serif;
     }
 
-    /* Ефект переливаючогося світла - постійна анімація */
-
-
-    @keyframes shimmer {
-      0% {
-        left: -100%;
-      }
-      100% {
-        left: 200%;
-      }
-    }
-
     .donate-hero-btn:hover {
       transform: translateY(-5px) scale(1.05);
-
     }
 
     .donate-hero-btn .btn-text {
@@ -312,8 +298,6 @@
       50% { transform: scale(1); }
       75% { transform: scale(1.1); }
     }
-
-
 
     .donate-hero-btn:hover::after {
       opacity: 0.5;
@@ -794,6 +778,21 @@
       to { transform: rotate(360deg); }
     }
 
+    /* API Error States */
+    .api-error {
+      text-align: center;
+      padding: 40px;
+      background: rgba(230, 57, 70, 0.1);
+      border-radius: 10px;
+      border: 2px solid rgba(230, 57, 70, 0.5);
+    }
+
+    .api-error i {
+      font-size: 60px;
+      color: var(--primary);
+      margin-bottom: 20px;
+    }
+
     /* Responsive Design */
     @media (max-width: 992px) {
       .hero h2 {
@@ -835,8 +834,6 @@
         max-width: 300px;
       }
       
-
-      
       .pc-card {
         padding: 25px;
       }
@@ -859,12 +856,13 @@
         grid-template-columns: 1fr;
       }
       
-.donate-hero-btn {
-  box-shadow: none;
-}
+      .donate-hero-btn {
+        padding: 18px 30px;
+        font-size: 1.1rem;
+      }
       
       .donate-hero-btn i {
-        font-size: 1.2rem;
+        font-size: 1rem;
       }
       
       .spec-item {
@@ -913,7 +911,8 @@
     <div class="hero-bg"></div>
     <div class="container hero-content">
       <div class="hero-left">
-
+        <h2>SaXon <span>WOT</span></h2>
+        
         <div class="donate-hero-btn-container">
           <a href="https://saxon.donatik.ua/" class="donate-hero-btn" target="_blank">
             <i class="fas fa-heart"></i>
@@ -1189,11 +1188,11 @@
 
 <script>
   // ==========================
-  // КОНФІГУРАЦІЯ (БЕЗ API)
+  // КОНФІГУРАЦІЯ API
   // ==========================
   const CHANNEL_ID = "UCs7pQ0P5Jg8f_SYvGmT0Y7g";
-  const CHANNEL_HANDLE = "@saxonuawot";
-
+  const API_KEY = "AIzaSyA4xawh40f7rgqRgzO5IbANSLCgWV_BnVE";
+  
   // DOM елементи
   const statusIndicator = document.getElementById("statusIndicator");
   const statusText = document.getElementById("statusText");
@@ -1203,18 +1202,9 @@
   const playerContainer = document.getElementById("playerContainer");
   const latestStreamsContainer = document.getElementById("latestStreamsContainer");
 
-  // RSS URL
-  const RSS_URL = `https://www.youtube.com/feeds/videos.xml?channel_id=${CHANNEL_ID}`;
-
   // ==========================
   // Допоміжні функції
   // ==========================
-  function extractVideoIdFromLink(link) {
-    // link виглядає так: https://www.youtube.com/watch?v=VIDEO_ID
-    const url = new URL(link);
-    return url.searchParams.get("v");
-  }
-
   function formatDate(dateString) {
     const date = new Date(dateString);
     return date.toLocaleDateString("uk-UA", {
@@ -1224,42 +1214,81 @@
     });
   }
 
-  // ==========================
-  // Завантаження RSS
-  // ==========================
-  async function loadFromRSS(maxResults = 3) {
+  function extractVideoIdFromLink(link) {
     try {
-      // Важливо: напряму fetch RSS може блокуватись CORS
-      // Тому використовуємо безпечний проксі rss2json
-const proxyUrl = `https://r.jina.ai/http://www.youtube.com/feeds/videos.xml?channel_id=${CHANNEL_ID}`;
-
-
-      const response = await fetch(proxyUrl);
-      if (!response.ok) throw new Error("RSS proxy request failed");
-
-      const data = await response.json();
-      if (!data.items || data.items.length === 0) return [];
-
-      // Беремо останні maxResults відео
-      return data.items.slice(0, maxResults).map((item) => {
-        const videoId = extractVideoIdFromLink(item.link);
-
-        return {
-          videoId,
-          title: item.title,
-          publishedAt: item.pubDate,
-          thumbnail: item.thumbnail,
-          link: item.link,
-        };
-      });
-    } catch (err) {
-      console.error("Помилка RSS:", err);
-      return [];
+      const url = new URL(link);
+      return url.searchParams.get("v");
+    } catch {
+      return null;
     }
   }
 
   // ==========================
-  // UI
+  // Функції для роботи з YouTube API
+  // ==========================
+  async function fetchStreamsFromAPI(maxResults = 6) {
+    try {
+      // Запит для отримання останніх стрімів (completed live streams)
+      const url = `https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${CHANNEL_ID}&part=snippet&type=video&eventType=completed&maxResults=${maxResults}&order=date`;
+      
+      const response = await fetch(url);
+      
+      if (!response.ok) {
+        throw new Error(`Помилка API: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      
+      if (!data.items || data.items.length === 0) {
+        return [];
+      }
+      
+      // Формуємо масив стрімів
+      return data.items.map(item => ({
+        videoId: item.id.videoId,
+        title: item.snippet.title,
+        publishedAt: item.snippet.publishedAt,
+        thumbnail: item.snippet.thumbnails.high?.url || item.snippet.thumbnails.medium?.url || item.snippet.thumbnails.default?.url,
+        link: `https://www.youtube.com/watch?v=${item.id.videoId}`,
+        isStream: true
+      }));
+    } catch (error) {
+      console.error('Помилка завантаження стрімів через API:', error);
+      return null;
+    }
+  }
+
+  async function checkLiveStream() {
+    try {
+      // Перевіряємо, чи є активний стрім
+      const url = `https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${CHANNEL_ID}&part=snippet&type=video&eventType=live&maxResults=1`;
+      
+      const response = await fetch(url);
+      
+      if (!response.ok) {
+        throw new Error(`Помилка API: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      
+      if (data.items && data.items.length > 0) {
+        return {
+          isLive: true,
+          videoId: data.items[0].id.videoId,
+          title: data.items[0].snippet.title,
+          publishedAt: data.items[0].snippet.publishedAt
+        };
+      }
+      
+      return { isLive: false };
+    } catch (error) {
+      console.error('Помилка перевірки живого стріму:', error);
+      return { isLive: false };
+    }
+  }
+
+  // ==========================
+  // UI Функції
   // ==========================
   function setOfflineUI() {
     statusIndicator.className = "status-indicator";
@@ -1268,62 +1297,132 @@ const proxyUrl = `https://r.jina.ai/http://www.youtube.com/feeds/videos.xml?chan
     streamIndicator.className = "status-indicator";
     streamStatusText.innerHTML = "<strong>ЗАРАЗ ОФЛАЙН</strong>";
 
-    // /live відкриє стрім якщо він йде, або покаже сторінку
-    streamLink.href = `https://www.youtube.com/${CHANNEL_HANDLE}/live`;
+    streamLink.href = `https://www.youtube.com/@saxonuawot/live`;
     streamLink.textContent = "Перейти до стріму";
   }
 
-  async function renderPlayerWithLatestVideo() {
-    const items = await loadFromRSS(1);
+  function setLiveUI() {
+    statusIndicator.className = "status-indicator live";
+    statusText.innerHTML = "🔴 <strong>LIVE ЗАРАЗ!</strong>";
 
-    if (items.length === 0) {
+    streamIndicator.className = "status-indicator live";
+    streamStatusText.innerHTML = "<strong>LIVE ЗАРАЗ!</strong>";
+
+    streamLink.href = `https://www.youtube.com/@saxonuawot/live`;
+    streamLink.textContent = "Дивитись LIVE";
+  }
+
+  async function renderPlayerWithLatestStream() {
+    // Спочатку перевіряємо, чи є живий стрім
+    const liveStatus = await checkLiveStream();
+    
+    if (liveStatus.isLive) {
+      // Якщо є живий стрім, показуємо його
+      setLiveUI();
+      
+      playerContainer.innerHTML = `
+        <iframe 
+          width="100%" 
+          height="400" 
+          src="https://www.youtube.com/embed/${liveStatus.videoId}?autoplay=0&mute=1" 
+          frameborder="0" 
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+          allowfullscreen
+          title="${liveStatus.title}">
+        </iframe>
+      `;
+      
+      streamLink.href = `https://www.youtube.com/watch?v=${liveStatus.videoId}`;
+      return;
+    }
+    
+    // Якщо живого стріму немає, перевіряємо останні стріми
+    setOfflineUI();
+    const streams = await fetchStreamsFromAPI(1);
+    
+    if (streams && streams.length > 0) {
+      // Показуємо останній стрім
+      const latestStream = streams[0];
+      
+      playerContainer.innerHTML = `
+        <iframe 
+          width="100%" 
+          height="400" 
+          src="https://www.youtube.com/embed/${latestStream.videoId}?autoplay=0&mute=1" 
+          frameborder="0" 
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+          allowfullscreen
+          title="${latestStream.title}">
+        </iframe>
+      `;
+      
+      streamLink.href = latestStream.link;
+      streamLink.textContent = "Дивитись останній стрім";
+    } else {
+      // Якщо немає стрімів, показуємо запасний варіант
       playerContainer.innerHTML = `
         <div style="text-align: center; padding: 40px;">
           <i class="fas fa-video-slash" style="font-size: 60px; color: var(--grey); margin-bottom: 20px;"></i>
-          <h3>Відео не знайдено</h3>
+          <h3>Немає доступних стрімів</h3>
           <p>Перейдіть на канал для перегляду контенту</p>
-          <a href="https://www.youtube.com/${CHANNEL_HANDLE}" class="link-btn" style="margin-top: 20px;">Перейти на канал</a>
+          <a href="https://www.youtube.com/@saxonuawot" class="link-btn" style="margin-top: 20px;">Перейти на канал</a>
+        </div>
+      `;
+    }
+  }
+
+  async function renderLatestStreams() {
+    // Показуємо індикатор завантаження
+    latestStreamsContainer.innerHTML = `
+      <div class="loading" style="grid-column: 1 / -1;">
+        <div class="loading-spinner"></div>
+        <p>Завантаження стрімів...</p>
+      </div>
+    `;
+
+    const streams = await fetchStreamsFromAPI(6);
+    
+    // Обробка помилок
+    if (streams === null) {
+      latestStreamsContainer.innerHTML = `
+        <div class="api-error" style="grid-column: 1 / -1;">
+          <i class="fas fa-exclamation-triangle"></i>
+          <h3>Не вдалося завантажити стріми</h3>
+          <p>Перевірте підключення до інтернету або спробуйте пізніше.</p>
+          <a href="https://www.youtube.com/@saxonuawot/streams" class="link-btn" target="_blank" style="margin-top: 15px;">
+            <i class="fab fa-youtube"></i> Дивитися стріми на YouTube
+          </a>
         </div>
       `;
       return;
     }
-
-    const latest = items[0];
-
-    playerContainer.innerHTML = `
-      <iframe 
-        width="100%" 
-        height="400" 
-        src="https://www.youtube.com/embed/${latest.videoId}?autoplay=0&mute=0" 
-        frameborder="0" 
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-        allowfullscreen
-        title="${latest.title}">
-      </iframe>
-    `;
-  }
-
-  async function renderLatestStreams() {
-    const streams = await loadFromRSS(3);
-
+    
     if (streams.length === 0) {
       latestStreamsContainer.innerHTML = `
         <div style="grid-column: 1 / -1; text-align: center; padding: 40px;">
           <i class="fas fa-video-slash" style="font-size: 60px; color: var(--grey); margin-bottom: 20px;"></i>
-          <h3>Стріми не знайдено</h3>
-          <p>На каналі ще немає контенту</p>
+          <h3>Завершених стрімів ще немає</h3>
+          <p>Перший стрім з'явиться тут після його завершення.</p>
+          <a href="https://www.youtube.com/@saxonuawot" class="link-btn" target="_blank" style="margin-top: 15px;">
+            <i class="fab fa-youtube"></i> Перейти на канал
+          </a>
         </div>
       `;
       return;
     }
-
-    let html = "";
-
-    streams.forEach((stream) => {
+    
+    // Відображаємо стріми (максимум 6, але для сітки краще 3)
+    const streamsToShow = streams.slice(0, 3);
+    let html = '';
+    
+    streamsToShow.forEach((stream) => {
       html += `
         <div class="stream-card">
           <div class="stream-thumbnail">
             <img src="${stream.thumbnail}" alt="${stream.title}" loading="lazy">
+            <div class="stream-duration">
+              <i class="fas fa-broadcast-tower"></i> СТРІМ
+            </div>
           </div>
           <div class="stream-info-content">
             <h4>${stream.title}</h4>
@@ -1333,13 +1432,13 @@ const proxyUrl = `https://r.jina.ai/http://www.youtube.com/feeds/videos.xml?chan
               </div>
             </div>
             <a href="${stream.link}" class="stream-btn" target="_blank">
-              <i class="fas fa-play"></i> Дивитись
+              <i class="fas fa-play"></i> Дивитись запис
             </a>
           </div>
         </div>
       `;
     });
-
+    
     latestStreamsContainer.innerHTML = html;
   }
 
@@ -1347,8 +1446,7 @@ const proxyUrl = `https://r.jina.ai/http://www.youtube.com/feeds/videos.xml?chan
   // ІНІЦІАЛІЗАЦІЯ
   // ==========================
   async function initialize() {
-    setOfflineUI();
-    await renderPlayerWithLatestVideo();
+    await renderPlayerWithLatestStream();
     await renderLatestStreams();
   }
 
@@ -1395,11 +1493,10 @@ const proxyUrl = `https://r.jina.ai/http://www.youtube.com/feeds/videos.xml?chan
     setupSmoothScroll();
     initialize();
 
-    // Оновлення кожні 10 хвилин
-    setInterval(initialize, 10 * 60 * 1000);
+    // Оновлення кожні 5 хвилин
+    setInterval(initialize, 5 * 60 * 1000);
   });
 </script>
-
 
 </body>
 </html>
