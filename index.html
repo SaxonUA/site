@@ -16,6 +16,8 @@
       --darker: #0d1b2a;
       --light: #f1faee;
       --accent: #ffd166;
+      --donate-gold: #ffcc00;
+      --donate-gold-dark: #e6b800;
       --grey: #8d99ae;
       --camouflage: linear-gradient(135deg, #5a6c3a 0%, #7d8c55 25%, #3a4a2a 50%, #5a6c3a 75%, #7d8c55 100%);
     }
@@ -151,9 +153,9 @@
       cursor: pointer;
     }
 
-    /* Hero Section - ОБНОВЛЕНО */
+    /* Hero Section */
     .hero {
-      padding: 20px 0 0px;
+      padding: 80px 0 60px;
       position: relative;
       overflow: hidden;
     }
@@ -226,88 +228,151 @@
       font-weight: bold;
     }
 
-    /* Hero Donate Button */
+    /* ОНОВЛЕНА КНОПКА ПІДТРИМКИ - ГАРНА ЗОЛОТА КНОПКА */
     .donate-hero-btn-container {
-      margin: 25px 0 15px;
+      margin: 30px 0 20px;
+      position: relative;
+      display: inline-block;
     }
 
     .donate-hero-btn {
       display: inline-flex;
       align-items: center;
-      gap: 15px;
-      padding: 18px 35px;
-      background: linear-gradient(135deg, var(--primary), #ff5500);
-      color: white;
+      gap: 18px;
+      padding: 22px 40px;
+      background: linear-gradient(135deg, #ffcc00 0%, #ffaa00 25%, #ff9900 50%, #ff8800 75%, #ff7700 100%);
+      color: #1a1a1a;
       text-decoration: none;
-      border-radius: 50px;
-      font-weight: 700;
-      font-size: 1.2rem;
-      letter-spacing: 1px;
+      border-radius: 15px;
+      font-weight: 900;
+      font-size: 1.3rem;
+      letter-spacing: 1.5px;
       text-transform: uppercase;
-      box-shadow: 0 10px 25px rgba(255, 122, 0, 0.3);
-      transition: all 0.3s ease;
+      box-shadow: 
+        0 10px 30px rgba(255, 204, 0, 0.4),
+        0 0 0 3px rgba(255, 221, 0, 0.3),
+        inset 0 2px 10px rgba(255, 255, 255, 0.6);
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       position: relative;
       overflow: hidden;
       z-index: 1;
-    }
-
-    .donate-hero-btn:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 15px 30px rgba(255, 122, 0, 0.5);
-      background: linear-gradient(135deg, #ff8a00, #ff4400);
-    }
-
-    .donate-hero-btn .btn-text {
       font-family: 'Orbitron', sans-serif;
     }
 
+    /* Ефект переливаючогося світла - постійна анімація */
+    .donate-hero-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        90deg, 
+        transparent 0%, 
+        rgba(255, 255, 255, 0.2) 50%, 
+        transparent 100%
+      );
+      animation: shimmer 3s infinite;
+      z-index: 1;
+    }
+
+    @keyframes shimmer {
+      0% {
+        left: -100%;
+      }
+      100% {
+        left: 200%;
+      }
+    }
+
+    .donate-hero-btn:hover {
+      transform: translateY(-5px) scale(1.05);
+      box-shadow: 
+        0 15px 35px rgba(255, 204, 0, 0.6),
+        0 0 0 4px rgba(255, 221, 0, 0.4),
+        inset 0 2px 12px rgba(255, 255, 255, 0.8);
+      background: linear-gradient(135deg, #ffd700 0%, #ffbb00 25%, #ffaa00 50%, #ff9900 75%, #ff8800 100%);
+    }
+
+    .donate-hero-btn .btn-text {
+      font-weight: 900;
+      text-shadow: 0 1px 3px rgba(255, 255, 255, 0.5);
+      position: relative;
+      z-index: 2;
+    }
+
     .donate-hero-btn i {
-      font-size: 1.3rem;
-      transition: transform 0.3s ease;
+      transition: all 0.3s ease;
+      position: relative;
+      z-index: 2;
+    }
+
+    .donate-hero-btn i:first-child {
+      color: #ff3333;
+      animation: heartbeat 1.5s ease-in-out infinite;
+      text-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
     }
 
     .donate-hero-btn:hover i:first-child {
-      transform: scale(1.2);
-      color: var(--accent);
+      animation: heartbeat 0.8s ease-in-out infinite;
+      transform: scale(1.3);
+      color: #ff0000;
+      text-shadow: 0 0 15px rgba(255, 0, 0, 0.8);
+    }
+
+    .donate-hero-btn i:last-child {
+      font-size: 1.2rem;
     }
 
     .donate-hero-btn:hover i:last-child {
-      transform: translateX(5px);
+      transform: translateX(8px);
     }
 
-    /* Pulsating Effect */
-    .pulse-effect {
+    @keyframes heartbeat {
+      0%, 100% { transform: scale(1); }
+      25% { transform: scale(1.15); }
+      50% { transform: scale(1); }
+      75% { transform: scale(1.1); }
+    }
+
+    /* Ефект золотого світіння країв */
+    .donate-hero-btn::after {
+      content: '';
       position: absolute;
-      width: 100%;
-      height: 100%;
-      background: inherit;
-      border-radius: 50px;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      background: linear-gradient(45deg, #ffcc00, #ff9900, #ffcc00, #ff9900);
+      border-radius: 17px;
       z-index: -1;
-      animation: pulse 2s infinite;
-      opacity: 0.7;
+      opacity: 0;
+      transition: opacity 0.3s ease;
     }
 
-    @keyframes pulse {
+    .donate-hero-btn:hover::after {
+      opacity: 0.5;
+      animation: rotate 3s linear infinite;
+    }
+
+    @keyframes rotate {
       0% {
-        transform: scale(1);
-        opacity: 0.7;
-      }
-      50% {
-        transform: scale(1.05);
-        opacity: 0.4;
+        filter: hue-rotate(0deg);
       }
       100% {
-        transform: scale(1);
-        opacity: 0.7;
+        filter: hue-rotate(360deg);
       }
     }
 
+    /* Спрощений текст під кнопкою */
     .hero-subtext {
-      margin-top: 12px;
-      font-size: 0.95rem;
-      color: var(--grey);
+      margin-top: 15px;
+      font-size: 1rem;
+      color: var(--accent);
       font-style: italic;
       max-width: 500px;
+      text-align: center;
     }
 
     /* Links Section */
@@ -414,6 +479,99 @@
       border: 2px solid var(--primary);
     }
 
+    /* My PC Section */
+    .pc-section {
+      padding: 80px 0;
+      background-color: rgba(29, 53, 87, 0.3);
+    }
+
+    .pc-card {
+      background: rgba(13, 27, 42, 0.8);
+      border-radius: 15px;
+      padding: 40px;
+      max-width: 800px;
+      margin: 0 auto;
+      border: 2px solid var(--primary);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .pc-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 5px;
+      background: linear-gradient(90deg, var(--primary), var(--accent), var(--primary));
+    }
+
+    .pc-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .pc-header h3 {
+      font-size: 2.2rem;
+      color: var(--primary);
+      margin-bottom: 10px;
+    }
+
+    .pc-header p {
+      color: var(--grey);
+      font-size: 1.1rem;
+    }
+
+    .pc-specs {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    .spec-item {
+      display: flex;
+      align-items: center;
+      padding: 15px;
+      background: rgba(29, 53, 87, 0.5);
+      border-radius: 10px;
+      transition: all 0.3s ease;
+      border-left: 4px solid var(--primary);
+    }
+
+    .spec-item:hover {
+      transform: translateX(5px);
+      background: rgba(29, 53, 87, 0.8);
+      border-left-color: var(--accent);
+    }
+
+    .spec-icon {
+      width: 50px;
+      height: 50px;
+      background: var(--primary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      margin-right: 15px;
+      color: white;
+      flex-shrink: 0;
+    }
+
+    .spec-content h4 {
+      font-size: 1rem;
+      color: var(--grey);
+      margin-bottom: 5px;
+      font-weight: 400;
+    }
+
+    .spec-content p {
+      font-size: 1.2rem;
+      color: var(--light);
+      font-weight: 700;
+    }
+
     /* Live Stream Section */
     .stream-section {
       padding: 60px 0;
@@ -505,6 +663,110 @@
       border-bottom: none;
     }
 
+    /* Latest Streams Section */
+    .latest-streams {
+      padding: 80px 0;
+      background-color: var(--darker);
+    }
+
+    .streams-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 30px;
+      margin-top: 40px;
+    }
+
+    .stream-card {
+      background: rgba(29, 53, 87, 0.5);
+      border-radius: 10px;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
+    }
+
+    .stream-card:hover {
+      transform: translateY(-10px);
+      border-color: var(--primary);
+      box-shadow: 0 15px 30px rgba(255, 122, 0, 0.2);
+    }
+
+    .stream-thumbnail {
+      position: relative;
+      height: 180px;
+      overflow: hidden;
+    }
+
+    .stream-thumbnail img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+
+    .stream-card:hover .stream-thumbnail img {
+      transform: scale(1.05);
+    }
+
+    .stream-duration {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      background: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 0.8rem;
+    }
+
+    .stream-info-content {
+      padding: 20px;
+    }
+
+    .stream-info-content h4 {
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+      color: var(--light);
+      height: 60px;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+
+    .stream-meta {
+      display: flex;
+      justify-content: space-between;
+      color: var(--grey);
+      font-size: 0.9rem;
+      margin-bottom: 20px;
+    }
+
+    .stream-views, .stream-date {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .stream-btn {
+      display: block;
+      text-align: center;
+      padding: 10px 15px;
+      background-color: var(--primary);
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+      font-weight: bold;
+      transition: all 0.3s;
+      text-transform: uppercase;
+      font-size: 0.9rem;
+      letter-spacing: 1px;
+    }
+
+    .stream-btn:hover {
+      background-color: var(--primary-dark);
+      transform: scale(1.05);
+    }
+
     /* Footer */
     footer {
       padding: 40px 0;
@@ -548,10 +810,34 @@
       font-size: 0.9rem;
     }
 
+    /* Loading states */
+    .loading {
+      text-align: center;
+      padding: 40px;
+    }
+
+    .loading-spinner {
+      display: inline-block;
+      width: 50px;
+      height: 50px;
+      border: 3px solid rgba(255, 122, 0, 0.3);
+      border-radius: 50%;
+      border-top-color: var(--primary);
+      animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
     /* Responsive Design */
     @media (max-width: 992px) {
       .hero h2 {
         font-size: 2.8rem;
+      }
+      
+      .pc-specs {
+        grid-template-columns: 1fr;
       }
     }
 
@@ -586,8 +872,17 @@
       }
       
       .donate-hero-btn {
-        padding: 16px 25px;
+        padding: 20px 30px;
         font-size: 1.1rem;
+        gap: 12px;
+      }
+      
+      .pc-card {
+        padding: 25px;
+      }
+      
+      .streams-grid {
+        grid-template-columns: 1fr;
       }
     }
 
@@ -605,13 +900,26 @@
       }
       
       .donate-hero-btn {
-        padding: 14px 20px;
+        padding: 18px 25px;
         font-size: 1rem;
         gap: 10px;
+        flex-direction: column;
+        text-align: center;
       }
       
       .donate-hero-btn i {
-        font-size: 1.1rem;
+        font-size: 1.2rem;
+      }
+      
+      .spec-item {
+        flex-direction: column;
+        text-align: center;
+        padding: 20px;
+      }
+      
+      .spec-icon {
+        margin-right: 0;
+        margin-bottom: 15px;
       }
     }
   </style>
@@ -635,7 +943,7 @@
         <a href="#links">ПОСИЛАННЯ</a>
         <a href="#stream">СТРІМ</a>
         <a href="#donate">ДОНАТ</a>
-        <a href="#about">ПРО МЕНЕ</a>
+        <a href="#pc">МІЙ ПК</a>
       </nav>
 
       <button class="mobile-menu-btn">
@@ -644,7 +952,7 @@
     </div>
   </header>
 
-  <!-- Hero Section - ОБНОВЛЕНО -->
+  <!-- Hero Section -->
   <section class="hero">
     <div class="hero-bg"></div>
     <div class="container hero-content">
@@ -652,7 +960,6 @@
 
         <div class="donate-hero-btn-container">
           <a href="https://saxon.donatik.ua/" class="donate-hero-btn" target="_blank">
-            <span class="pulse-effect"></span>
             <i class="fas fa-heart"></i>
             <span class="btn-text">Підтримати стрімера</span>
             <i class="fas fa-chevron-right"></i>
@@ -660,7 +967,7 @@
           <p class="hero-subtext">Ваша підтримка допомагає розвивати канал та покращувати якість контенту!</p>
         </div>
         
-        <div class="stream-status" style="margin-top: 20px;">
+        <div class="stream-status" style="margin-top: 30px;">
           <div class="status-indicator" id="statusIndicator"></div>
           <h3 id="statusText">Перевіряю статус трансляції...</h3>
         </div>
@@ -730,8 +1037,6 @@
           <p>Канал з анонсами стрімів та спільнота для спілкування</p>
           <a href="https://t.me/wotsaxon" class="link-btn" target="_blank">Перейти</a>
         </div>
-
-
       </div>
     </div>
   </section>
@@ -745,12 +1050,10 @@
 
       <div class="stream-container">
         <div class="stream-player">
-          <!-- YouTube Player will be inserted here -->
           <div id="playerContainer" style="width: 100%; height: 400px; display: flex; align-items: center; justify-content: center; background-color: #000;">
-            <div style="text-align: center;">
-              <i class="fas fa-satellite-dish" style="font-size: 60px; color: var(--grey); margin-bottom: 20px;"></i>
-              <h3>Очікування трансляції</h3>
-              <p>Стрім з'явиться тут, коли розпочнеться трансляція</p>
+            <div class="loading">
+              <div class="loading-spinner"></div>
+              <p>Завантаження трансляції...</p>
             </div>
           </div>
         </div>
@@ -773,6 +1076,123 @@
               <li><span>Неділя</span> <span>Вихідний :)</span></li>
             </ul>
             <p style="margin-top: 10px; font-size: 0.9rem; color: var(--grey);">* Час може змінюватись, слідкуйте за оновленнями в соцмережах</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Latest Streams Section -->
+  <section class="latest-streams">
+    <div class="container">
+      <div class="section-title">
+        <h2>ОСТАННІ СТРІМИ</h2>
+        <p>Три останні стріми з мого каналу</p>
+      </div>
+
+      <div class="streams-grid" id="latestStreamsContainer">
+        <!-- Streams will be loaded here by JavaScript -->
+        <div class="loading">
+          <div class="loading-spinner"></div>
+          <p>Завантаження останніх стрімів...</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- My PC Section -->
+  <section class="pc-section" id="pc">
+    <div class="container">
+      <div class="section-title">
+        <h2>МІЙ ПК</h2>
+        <p>Конфігурація мого ігрового комп'ютера</p>
+      </div>
+
+      <div class="pc-card">
+        <div class="pc-header">
+          <h3><i class="fas fa-desktop"></i> ІГРОВА СТАНЦІЯ</h3>
+          <p>Конфігурація для комфортного стрімінга World of Tanks</p>
+        </div>
+
+        <div class="pc-specs">
+          <div class="spec-item">
+            <div class="spec-icon">
+              <i class="fas fa-microchip"></i>
+            </div>
+            <div class="spec-content">
+              <h4>Процесор</h4>
+              <p>AMD Ryzen 7 7800X3D</p>
+            </div>
+          </div>
+
+          <div class="spec-item">
+            <div class="spec-icon">
+              <i class="fas fa-gamepad"></i>
+            </div>
+            <div class="spec-content">
+              <h4>Відеокарта</h4>
+              <p>NVIDIA GeForce RTX 5070 Ti</p>
+            </div>
+          </div>
+
+          <div class="spec-item">
+            <div class="spec-icon">
+              <i class="fas fa-memory"></i>
+            </div>
+            <div class="spec-content">
+              <h4>Оперативна пам'ять</h4>
+              <p>32GB DDR5 7200MHz</p>
+            </div>
+          </div>
+
+          <div class="spec-item">
+            <div class="spec-icon">
+              <i class="fas fa-hdd"></i>
+            </div>
+            <div class="spec-content">
+              <h4>Накопичувач</h4>
+              <p>SSD NVMe 1TB + 1TB</p>
+            </div>
+          </div>
+
+          <div class="spec-item">
+            <div class="spec-icon">
+              <i class="fas fa-microchip"></i>
+            </div>
+            <div class="spec-content">
+              <h4>Материнська плата</h4>
+              <p>MSI B650 Gaming Plus WiFi</p>
+            </div>
+          </div>
+
+          <div class="spec-item">
+            <div class="spec-icon">
+              <i class="fas fa-fan"></i>
+            </div>
+            <div class="spec-content">
+              <h4>Охолодження</h4>
+              <p>Be Quiet Dark Rock Pro 4</p>
+            </div>
+          </div>
+
+          <div class="spec-item">
+            <div class="spec-icon">
+              <i class="fas fa-bolt"></i>
+            </div>
+            <div class="spec-content">
+              <h4>Блок живлення</h4>
+              <p>850W 80+ Gold Certified</p>
+            </div>
+          </div>
+
+          <div class="spec-item">
+            <div class="spec-icon">
+              <i class="fas fa-tv"></i>
+            </div>
+            <div class="spec-content">
+              <h4>Монітор</h4>
+              <p>32" 1440p @ 144Hz</p>
+            </div>
           </div>
         </div>
       </div>
@@ -802,133 +1222,228 @@
           <i class="fas fa-tank"></i>
         </div>
         <div class="logo-text">
-          <h1 style="font-size: 24px;">Saxon_UA</h1>
+          <h1 style="font-size: 24px;">SaXon WOT</h1>
           <p style="font-size: 12px;">WORLD OF TANKS STREAMER</p>
         </div>
       </div>
       
-      <p class="copyright">© 2026 SaXon WOT WoT. Всі права захищені.</p>
+      <p class="copyright">© 2026 SaXon WOT</p>
     </div>
   </footer>
 
-  <script>
-    // ==========================
-    // ЛОГІКА БЕЗ YouTube API
-    // ==========================
-    // Тепер сайт не потребує API ключа
-    const statusIndicator = document.getElementById('statusIndicator');
-    const statusText = document.getElementById('statusText');
-    const streamIndicator = document.getElementById('streamIndicator');
-    const streamStatusText = document.getElementById('streamStatusText');
-    const streamLink = document.getElementById('streamLink');
-    const playerContainer = document.getElementById('playerContainer');
-    
-    // Конфігурація - замініть це посилання на своє відео з стріму
-    const LAST_STREAM_VIDEO_ID = "jZn8Mq3UhjM"; // ID останнього відео з каналу
-    
-    // Функція для оновлення статусу
-    function updateStatus(isLive) {
-      if (isLive) {
-        // Онлайн статус
-        statusIndicator.className = 'status-indicator live';
-        statusText.textContent = '🔴 ЗАРАЗ В ЕФІРІ!';
-        streamIndicator.className = 'status-indicator live';
-        streamStatusText.textContent = 'ПРЯМА ТРАНСЛЯЦІЯ';
-        
-        streamLink.href = `https://www.youtube.com/@saxonuawot/live`;
-        streamLink.textContent = 'Перейти до стріму';
-        
-        // Показуємо останній стрім
-        playerContainer.innerHTML = `
-          <iframe 
-            width="100%" 
-            height="400" 
-            src="https://www.youtube.com/embed/${LAST_STREAM_VIDEO_ID}?autoplay=0&mute=0" 
-            frameborder="0" 
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-            allowfullscreen>
-          </iframe>
-        `;
-      } else {
-        // Офлайн статус
-        statusIndicator.className = 'status-indicator';
-        statusText.textContent = '⚫ ЗАРАЗ ОФЛАЙН';
-        streamIndicator.className = 'status-indicator';
-        streamStatusText.textContent = 'ЗАРАЗ ОФЛАЙН';
-        streamLink.href = 'https://www.youtube.com/@saxonuawot';
-        streamLink.textContent = 'Перейти на канал';
-        
-        // Показуємо останнє відео
-        playerContainer.innerHTML = `
-          <iframe 
-            width="100%" 
-            height="400" 
-            src="https://www.youtube.com/embed/${LAST_STREAM_VIDEO_ID}?autoplay=0&mute=0" 
-            frameborder="0" 
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-            allowfullscreen>
-          </iframe>
-        `;
-      }
-    }
-    
-    // Функція для перевірки статусу стріму (без API)
-    // У реальності це можна зробити тільки з API, тому використовуємо демо-режим
-    function checkLiveStatus() {
-      // Демо-режим: випадковим чином показуємо статус
-      // У реальному сайті ви можете вручну змінювати цей статус
-      const isLive = false; // За замовчуванням офлайн
-      
-      updateStatus(isLive);
-    }
-    
-    // Функція для показу інформації "Про мене"
-    function showAbout() {
-      alert(`SaXon WOT - український стрімер World of Tanks\n\nДосвід гри: понад 8 років\nРегіон: Європа\nУлюблені танки: важкі та ПТ-САУ\nСтиль гри: агресивний та тактичний\n\nПриєднуйся до спільноти та слідкуй за стрімами!`);
-    }
-    
-    // Ініціалізація
-    document.addEventListener('DOMContentLoaded', () => {
-      // Перевіряємо статус стріму при завантаженні
-      checkLiveStatus();
-      
-      // Обробка кнопки мобільного меню
-      const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
-      const navLinks = document.querySelector('.nav-links');
-      
-      mobileMenuBtn.addEventListener('click', () => {
-        navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
+<script>
+  // ==========================
+  // КОНФІГУРАЦІЯ (БЕЗ API)
+  // ==========================
+  const CHANNEL_ID = "UCs7pQ0P5Jg8f_SYvGmT0Y7g";
+  const CHANNEL_HANDLE = "@saxonuawot";
+
+  // DOM елементи
+  const statusIndicator = document.getElementById("statusIndicator");
+  const statusText = document.getElementById("statusText");
+  const streamIndicator = document.getElementById("streamIndicator");
+  const streamStatusText = document.getElementById("streamStatusText");
+  const streamLink = document.getElementById("streamLink");
+  const playerContainer = document.getElementById("playerContainer");
+  const latestStreamsContainer = document.getElementById("latestStreamsContainer");
+
+  // RSS URL
+  const RSS_URL = `https://www.youtube.com/feeds/videos.xml?channel_id=${CHANNEL_ID}`;
+
+  // ==========================
+  // Допоміжні функції
+  // ==========================
+  function extractVideoIdFromLink(link) {
+    // link виглядає так: https://www.youtube.com/watch?v=VIDEO_ID
+    const url = new URL(link);
+    return url.searchParams.get("v");
+  }
+
+  function formatDate(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("uk-UA", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    });
+  }
+
+  // ==========================
+  // Завантаження RSS
+  // ==========================
+  async function loadFromRSS(maxResults = 3) {
+    try {
+      // Важливо: напряму fetch RSS може блокуватись CORS
+      // Тому використовуємо безпечний проксі rss2json
+const proxyUrl = `https://r.jina.ai/http://www.youtube.com/feeds/videos.xml?channel_id=${CHANNEL_ID}`;
+
+
+      const response = await fetch(proxyUrl);
+      if (!response.ok) throw new Error("RSS proxy request failed");
+
+      const data = await response.json();
+      if (!data.items || data.items.length === 0) return [];
+
+      // Беремо останні maxResults відео
+      return data.items.slice(0, maxResults).map((item) => {
+        const videoId = extractVideoIdFromLink(item.link);
+
+        return {
+          videoId,
+          title: item.title,
+          publishedAt: item.pubDate,
+          thumbnail: item.thumbnail,
+          link: item.link,
+        };
       });
-      
-      // Плавна прокрутка для навігації
-      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function(e) {
-          if (this.getAttribute('href') === '#') return;
-          
-          e.preventDefault();
-          const targetId = this.getAttribute('href');
-          const targetElement = document.querySelector(targetId);
-          
-          if (targetElement) {
-            window.scrollTo({
-              top: targetElement.offsetTop - 80,
-              behavior: 'smooth'
-            });
-            
-            // Закриваємо мобільне меню під час кліку
-            if (window.innerWidth <= 768) {
-              navLinks.style.display = 'none';
-            }
-          }
-        });
+    } catch (err) {
+      console.error("Помилка RSS:", err);
+      return [];
+    }
+  }
+
+  // ==========================
+  // UI
+  // ==========================
+  function setOfflineUI() {
+    statusIndicator.className = "status-indicator";
+    statusText.innerHTML = "⚫ <strong>ЗАРАЗ ОФЛАЙН</strong>";
+
+    streamIndicator.className = "status-indicator";
+    streamStatusText.innerHTML = "<strong>ЗАРАЗ ОФЛАЙН</strong>";
+
+    // /live відкриє стрім якщо він йде, або покаже сторінку
+    streamLink.href = `https://www.youtube.com/${CHANNEL_HANDLE}/live`;
+    streamLink.textContent = "Перейти до стріму";
+  }
+
+  async function renderPlayerWithLatestVideo() {
+    const items = await loadFromRSS(1);
+
+    if (items.length === 0) {
+      playerContainer.innerHTML = `
+        <div style="text-align: center; padding: 40px;">
+          <i class="fas fa-video-slash" style="font-size: 60px; color: var(--grey); margin-bottom: 20px;"></i>
+          <h3>Відео не знайдено</h3>
+          <p>Перейдіть на канал для перегляду контенту</p>
+          <a href="https://www.youtube.com/${CHANNEL_HANDLE}" class="link-btn" style="margin-top: 20px;">Перейти на канал</a>
+        </div>
+      `;
+      return;
+    }
+
+    const latest = items[0];
+
+    playerContainer.innerHTML = `
+      <iframe 
+        width="100%" 
+        height="400" 
+        src="https://www.youtube.com/embed/${latest.videoId}?autoplay=0&mute=0" 
+        frameborder="0" 
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+        allowfullscreen
+        title="${latest.title}">
+      </iframe>
+    `;
+  }
+
+  async function renderLatestStreams() {
+    const streams = await loadFromRSS(3);
+
+    if (streams.length === 0) {
+      latestStreamsContainer.innerHTML = `
+        <div style="grid-column: 1 / -1; text-align: center; padding: 40px;">
+          <i class="fas fa-video-slash" style="font-size: 60px; color: var(--grey); margin-bottom: 20px;"></i>
+          <h3>Стріми не знайдено</h3>
+          <p>На каналі ще немає контенту</p>
+        </div>
+      `;
+      return;
+    }
+
+    let html = "";
+
+    streams.forEach((stream) => {
+      html += `
+        <div class="stream-card">
+          <div class="stream-thumbnail">
+            <img src="${stream.thumbnail}" alt="${stream.title}" loading="lazy">
+          </div>
+          <div class="stream-info-content">
+            <h4>${stream.title}</h4>
+            <div class="stream-meta">
+              <div class="stream-date">
+                <i class="far fa-calendar"></i> ${formatDate(stream.publishedAt)}
+              </div>
+            </div>
+            <a href="${stream.link}" class="stream-btn" target="_blank">
+              <i class="fas fa-play"></i> Дивитись
+            </a>
+          </div>
+        </div>
+      `;
+    });
+
+    latestStreamsContainer.innerHTML = html;
+  }
+
+  // ==========================
+  // ІНІЦІАЛІЗАЦІЯ
+  // ==========================
+  async function initialize() {
+    setOfflineUI();
+    await renderPlayerWithLatestVideo();
+    await renderLatestStreams();
+  }
+
+  // Мобільне меню
+  function setupMobileMenu() {
+    const mobileMenuBtn = document.querySelector(".mobile-menu-btn");
+    const navLinks = document.querySelector(".nav-links");
+
+    mobileMenuBtn.addEventListener("click", () => {
+      navLinks.style.display = navLinks.style.display === "flex" ? "none" : "flex";
+    });
+
+    document.querySelectorAll(".nav-links a").forEach((link) => {
+      link.addEventListener("click", () => {
+        if (window.innerWidth <= 768) {
+          navLinks.style.display = "none";
+        }
       });
     });
-    
-    // Простий спосіб змінити статус стріму вручну
-    window.toggleStreamStatus = function() {
-      const currentStatus = statusIndicator.classList.contains('live');
-      updateStatus(!currentStatus);
-    };
-  </script>
+  }
+
+  // Плавна прокрутка
+  function setupSmoothScroll() {
+    document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+      anchor.addEventListener("click", function (e) {
+        if (this.getAttribute("href") === "#") return;
+
+        e.preventDefault();
+        const targetId = this.getAttribute("href");
+        const targetElement = document.querySelector(targetId);
+
+        if (targetElement) {
+          window.scrollTo({
+            top: targetElement.offsetTop - 80,
+            behavior: "smooth",
+          });
+        }
+      });
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    setupMobileMenu();
+    setupSmoothScroll();
+    initialize();
+
+    // Оновлення кожні 10 хвилин
+    setInterval(initialize, 10 * 60 * 1000);
+  });
+</script>
+
+
 </body>
 </html>
