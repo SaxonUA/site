@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>SaXon WOT | World of Tanks Streamer</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
   <style>
     :root {
@@ -29,7 +29,7 @@
     }
 
     body {
-      font-family: 'Roboto', sans-serif;
+      font-family: 'Inter', sans-serif;
       background-color: var(--darker);
       color: var(--light);
       line-height: 1.6;
@@ -52,7 +52,6 @@
       padding: 0 20px;
     }
 
-    /* Header */
     header {
       position: relative;
       padding: 30px 0;
@@ -153,7 +152,6 @@
       cursor: pointer;
     }
 
-    /* Hero Section */
     .hero {
       padding: 80px 0 60px;
       position: relative;
@@ -228,7 +226,6 @@
       font-weight: bold;
     }
 
-    /* ОНОВЛЕНА КНОПКА ПІДТРИМКИ - ГАРНА ЗОЛОТА КНОПКА */
     .donate-hero-btn-container {
       margin: 30px 0 20px;
       position: relative;
@@ -313,7 +310,6 @@
       }
     }
 
-    /* Спрощений текст під кнопкою */
     .hero-subtext {
       margin-top: 15px;
       font-size: 1rem;
@@ -323,7 +319,6 @@
       text-align: center;
     }
 
-    /* Links Section */
     .links-section {
       padding: 80px 0;
       background-color: var(--darker);
@@ -350,7 +345,16 @@
       transform: translateX(-50%);
       width: 100px;
       height: 4px;
-      background: var(--primary);
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      border-radius: 2px;
+    }
+
+    .section-title p {
+      color: var(--grey);
+      font-size: 1.1rem;
+      max-width: 600px;
+      margin: 0 auto;
+      line-height: 1.6;
     }
 
     .links-grid {
@@ -427,7 +431,6 @@
       border: 2px solid var(--primary);
     }
 
-    /* My PC Section */
     .pc-section {
       padding: 80px 0;
       background-color: rgba(29, 53, 87, 0.3);
@@ -520,28 +523,118 @@
       font-weight: 700;
     }
 
-    /* Live Stream Section */
+    .stream-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 30px;
+      position: relative;
+    }
+
+    .stream-header .section-title {
+      margin-bottom: 10px;
+    }
+
+    .stream-subtitle {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      padding: 8px 20px;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      letter-spacing: 1px;
+      margin-top: 10px;
+      box-shadow: 0 4px 12px rgba(255, 122, 0, 0.3);
+    }
+
+    .stream-subtitle i {
+      font-size: 0.8rem;
+    }
+
     .stream-section {
-      padding: 60px 0;
-      background-color: rgba(29, 53, 87, 0.5);
+      padding: 80px 0;
+      background-color: rgba(13, 27, 42, 0.7);
       position: relative;
     }
 
     .stream-container {
       display: flex;
       flex-wrap: wrap;
-      gap: 40px;
+      gap: 50px;
       margin-bottom: 40px;
     }
 
     .stream-player {
       flex: 1;
       min-width: 300px;
-      background-color: rgba(0, 0, 0, 0.5);
-      border-radius: 10px;
-      overflow: hidden;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      position: relative;
+    }
+
+    .player-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--darker);
+      color: var(--light);
+      padding: 10px 20px;
+      border-radius: 12px 12px 0 0;
+      font-weight: 600;
+      font-size: 0.95rem;
+      position: absolute;
+      top: -40px;
+      left: 20px;
+      z-index: 10;
       border: 2px solid var(--dark);
+      border-bottom: none;
+    }
+
+    .player-label.live {
+      background: linear-gradient(135deg, #ff3333, var(--primary));
+      color: white;
+    }
+
+    .player-label i {
+      font-size: 0.9rem;
+    }
+
+    .player-wrapper {
+      position: relative;
+      width: 100%;
+      background: var(--darker);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .player-aspect-ratio {
+      position: relative;
+      padding-bottom: 56.25%;
+      height: 0;
+      overflow: hidden;
+      border-radius: 16px;
+    }
+
+    #playerContainer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #0d1b2a, #1d3557);
+    }
+
+    #playerContainer iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      border-radius: 16px;
     }
 
     .stream-info {
@@ -555,21 +648,26 @@
     .stream-status {
       display: flex;
       align-items: center;
-      margin-bottom: 20px;
+      margin-bottom: 25px;
+      padding: 15px;
+      background: rgba(29, 53, 87, 0.3);
+      border-radius: 12px;
+      border-left: 4px solid var(--primary);
     }
 
     .status-indicator {
-      width: 15px;
-      height: 15px;
+      width: 14px;
+      height: 14px;
       border-radius: 50%;
       background-color: var(--grey);
       margin-right: 15px;
       position: relative;
+      flex-shrink: 0;
     }
 
     .status-indicator.live {
-      background-color: var(--primary);
-      box-shadow: 0 0 15px var(--primary);
+      background-color: #ff3333;
+      box-shadow: 0 0 15px #ff3333;
       animation: pulse 2s infinite;
     }
 
@@ -581,19 +679,35 @@
 
     .stream-info h3 {
       font-size: 1.8rem;
-      margin-bottom: 15px;
+      margin-bottom: 5px;
+      line-height: 1.3;
+    }
+
+    .stream-info > p {
+      font-size: 1.1rem;
+      line-height: 1.7;
+      color: var(--grey);
+      margin-bottom: 25px;
+      padding: 15px;
+      background: rgba(13, 27, 42, 0.5);
+      border-radius: 12px;
     }
 
     .schedule {
-      background-color: rgba(0, 0, 0, 0.3);
-      padding: 20px;
-      border-radius: 10px;
+      background: linear-gradient(135deg, rgba(29, 53, 87, 0.5), rgba(13, 27, 42, 0.7));
+      padding: 25px;
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
       margin-top: 20px;
     }
 
     .schedule h4 {
       color: var(--accent);
-      margin-bottom: 10px;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.2rem;
     }
 
     .schedule ul {
@@ -601,17 +715,71 @@
     }
 
     .schedule li {
-      padding: 8px 0;
+      padding: 12px 0;
       border-bottom: 1px solid rgba(255, 255, 255, 0.1);
       display: flex;
       justify-content: space-between;
+      font-size: 1rem;
+    }
+
+    .schedule li span:first-child {
+      color: var(--light);
+      font-weight: 500;
+    }
+
+    .schedule li span:last-child {
+      color: var(--accent);
+      font-weight: 600;
     }
 
     .schedule li:last-child {
       border-bottom: none;
     }
 
-    /* Latest Streams Section */
+    .schedule p {
+      margin-top: 15px;
+      font-size: 0.9rem;
+      color: var(--grey);
+      font-style: italic;
+    }
+
+    .stream-link-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 16px 30px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      text-decoration: none;
+      border-radius: 12px;
+      font-weight: 700;
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      text-transform: uppercase;
+      font-size: 1rem;
+      letter-spacing: 1px;
+      margin-top: 20px;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(255, 122, 0, 0.3);
+      width: 100%;
+      max-width: 300px;
+    }
+
+    .stream-link-btn:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 30px rgba(255, 122, 0, 0.4);
+      background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+    }
+
+    .stream-link-btn i {
+      transition: transform 0.3s ease;
+    }
+
+    .stream-link-btn:hover i {
+      transform: translateX(5px);
+    }
+
     .latest-streams {
       padding: 80px 0;
       background-color: var(--darker);
@@ -619,28 +787,32 @@
 
     .streams-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
       gap: 30px;
       margin-top: 40px;
     }
 
     .stream-card {
-      background: rgba(29, 53, 87, 0.5);
-      border-radius: 10px;
+      background: linear-gradient(135deg, rgba(29, 53, 87, 0.6), rgba(13, 27, 42, 0.8));
+      border-radius: 16px;
       overflow: hidden;
-      transition: all 0.3s ease;
-      border: 2px solid transparent;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      position: relative;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
     }
 
     .stream-card:hover {
-      transform: translateY(-10px);
+      transform: translateY(-12px);
       border-color: var(--primary);
-      box-shadow: 0 15px 30px rgba(255, 122, 0, 0.2);
+      box-shadow: 0 20px 40px rgba(255, 122, 0, 0.25);
     }
 
     .stream-thumbnail {
       position: relative;
-      height: 180px;
+      height: 200px;
       overflow: hidden;
     }
 
@@ -648,74 +820,118 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
-      transition: transform 0.5s ease;
+      transition: transform 0.6s ease;
     }
 
     .stream-card:hover .stream-thumbnail img {
-      transform: scale(1.05);
+      transform: scale(1.08);
+    }
+
+    .stream-thumbnail::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 60px;
+      background: linear-gradient(to top, rgba(13, 27, 42, 0.9), transparent);
     }
 
     .stream-duration {
       position: absolute;
-      bottom: 10px;
-      right: 10px;
-      background: rgba(0, 0, 0, 0.8);
+      bottom: 15px;
+      right: 15px;
+      background: rgba(0, 0, 0, 0.85);
       color: white;
-      padding: 3px 8px;
-      border-radius: 4px;
+      padding: 6px 12px;
+      border-radius: 20px;
       font-size: 0.8rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      z-index: 2;
+    }
+
+    .stream-duration i {
+      font-size: 0.7rem;
     }
 
     .stream-info-content {
-      padding: 20px;
+      padding: 25px;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
     }
 
     .stream-info-content h4 {
-      font-size: 1.2rem;
-      margin-bottom: 10px;
+      font-size: 1.3rem;
+      margin-bottom: 15px;
       color: var(--light);
-      height: 60px;
+      line-height: 1.4;
+      height: 66px;
       overflow: hidden;
       display: -webkit-box;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
+      font-weight: 700;
     }
 
     .stream-meta {
       display: flex;
       justify-content: space-between;
       color: var(--grey);
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
 
-    .stream-views, .stream-date {
+    .stream-date {
       display: flex;
       align-items: center;
-      gap: 5px;
+      gap: 7px;
+      font-weight: 500;
     }
 
-    .stream-btn {
-      display: block;
-      text-align: center;
-      padding: 10px 15px;
-      background-color: var(--primary);
+    .stream-date i {
+      color: var(--accent);
+    }
+
+    .stream-card-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 14px 20px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
       color: white;
       text-decoration: none;
-      border-radius: 5px;
-      font-weight: bold;
-      transition: all 0.3s;
+      border-radius: 12px;
+      font-weight: 700;
+      transition: all 0.3s ease;
       text-transform: uppercase;
-      font-size: 0.9rem;
+      font-size: 0.95rem;
       letter-spacing: 1px;
+      margin-top: auto;
+      border: none;
+      cursor: pointer;
     }
 
-    .stream-btn:hover {
-      background-color: var(--primary-dark);
-      transform: scale(1.05);
+    .stream-card-btn:hover {
+      background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(255, 122, 0, 0.3);
     }
 
-    /* Footer */
+    .stream-card-btn i {
+      transition: transform 0.3s ease;
+    }
+
+    .stream-card-btn:hover i {
+      transform: translateX(5px);
+    }
+
     footer {
       padding: 40px 0;
       background-color: rgba(13, 27, 42, 0.9);
@@ -758,7 +974,6 @@
       font-size: 0.9rem;
     }
 
-    /* Loading states */
     .loading {
       text-align: center;
       padding: 40px;
@@ -778,7 +993,6 @@
       to { transform: rotate(360deg); }
     }
 
-    /* API Error States */
     .api-error {
       text-align: center;
       padding: 40px;
@@ -793,7 +1007,6 @@
       margin-bottom: 20px;
     }
 
-    /* Responsive Design */
     @media (max-width: 992px) {
       .hero h2 {
         font-size: 2.8rem;
@@ -801,6 +1014,14 @@
       
       .pc-specs {
         grid-template-columns: 1fr;
+      }
+      
+      .stream-container {
+        gap: 40px;
+      }
+      
+      .streams-grid {
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
       }
     }
 
@@ -819,6 +1040,7 @@
 
       .stream-container {
         flex-direction: column;
+        gap: 30px;
       }
 
       .hero-content {
@@ -838,8 +1060,25 @@
         padding: 25px;
       }
       
+      .player-label {
+        left: 10px;
+        top: -35px;
+        font-size: 0.85rem;
+        padding: 8px 15px;
+      }
+      
+      .stream-info-content h4 {
+        font-size: 1.2rem;
+        height: 60px;
+      }
+      
       .streams-grid {
         grid-template-columns: 1fr;
+        gap: 25px;
+      }
+      
+      .section-title h2 {
+        font-size: 2rem;
       }
     }
 
@@ -875,12 +1114,42 @@
         margin-right: 0;
         margin-bottom: 15px;
       }
+      
+      .stream-section, .latest-streams {
+        padding: 60px 0;
+      }
+      
+      .player-label {
+        left: 0;
+        right: 0;
+        margin: 0 auto;
+        width: fit-content;
+        border-radius: 12px;
+        top: -15px;
+      }
+      
+      .stream-info-content {
+        padding: 20px;
+      }
+      
+      .stream-info-content h4 {
+        font-size: 1.1rem;
+        height: 56px;
+      }
+      
+      .stream-card-btn {
+        padding: 12px 16px;
+        font-size: 0.9rem;
+      }
+      
+      .section-title h2 {
+        font-size: 1.8rem;
+      }
     }
   </style>
 </head>
 
 <body>
-  <!-- Header -->
   <header>
     <div class="container header-content">
       <div class="logo">
@@ -906,7 +1175,6 @@
     </div>
   </header>
 
-  <!-- Hero Section -->
   <section class="hero">
     <div class="hero-bg"></div>
     <div class="container hero-content">
@@ -934,7 +1202,6 @@
     </div>
   </section>
 
-  <!-- Links Section -->
   <section class="links-section" id="links">
     <div class="container">
       <div class="section-title">
@@ -943,7 +1210,6 @@
       </div>
 
       <div class="links-grid">
-        <!-- YouTube -->
         <div class="link-card">
           <div class="link-icon" style="background: linear-gradient(135deg, #FF0000, #CC0000);">
             <i class="fab fa-youtube"></i>
@@ -953,7 +1219,6 @@
           <a href="https://www.youtube.com/@saxonuawot" class="link-btn" target="_blank">Перейти</a>
         </div>
 
-        <!-- Donate -->
         <div class="link-card donate-card" id="donate">
           <div class="link-icon" style="background: linear-gradient(135deg, #ffd166, #e9c46a);">
             <i class="fas fa-donate"></i>
@@ -963,7 +1228,6 @@
           <a href="https://saxon.donatik.ua/" class="link-btn" target="_blank">Підтримати</a>
         </div>
 
-        <!-- Twitch -->
         <div class="link-card">
           <div class="link-icon" style="background: linear-gradient(135deg, #9146FF, #6441A5);">
             <i class="fab fa-twitch"></i>
@@ -973,7 +1237,6 @@
           <a href="https://www.twitch.tv/saxon_wot" class="link-btn" target="_blank">Перейти</a>
         </div>
 
-        <!-- TikTok -->
         <div class="link-card">
           <div class="link-icon" style="background: linear-gradient(135deg, #000000, #333333);">
             <i class="fab fa-tiktok"></i>
@@ -983,7 +1246,6 @@
           <a href="https://www.tiktok.com/@saxon_ua_wot" class="link-btn" target="_blank">Перейти</a>
         </div>
 
-        <!-- Telegram -->
         <div class="link-card">
           <div class="link-icon" style="background: linear-gradient(135deg, #0088cc, #34B7F1);">
             <i class="fab fa-telegram"></i>
@@ -996,19 +1258,30 @@
     </div>
   </section>
 
-  <!-- Stream Section -->
   <section class="stream-section" id="stream">
     <div class="container">
-      <div class="section-title">
-        <h2>ПРЯМИЙ ЕФІР</h2>
+      <div class="stream-header">
+        <div class="section-title">
+          <h2>ПРЯМИЙ ЕФІР</h2>
+        </div>
+        <div class="stream-subtitle" id="streamSubtitle">
+          <i class="fas fa-circle"></i> LIVE / Офлайн
+        </div>
       </div>
 
       <div class="stream-container">
         <div class="stream-player">
-          <div id="playerContainer" style="width: 100%; height: 400px; display: flex; align-items: center; justify-content: center; background-color: #000;">
-            <div class="loading">
-              <div class="loading-spinner"></div>
-              <p>Завантаження трансляції...</p>
+          <div class="player-label" id="playerLabel">
+            <i class="fas fa-broadcast-tower"></i> Останній стрім
+          </div>
+          <div class="player-wrapper">
+            <div class="player-aspect-ratio">
+              <div id="playerContainer">
+                <div class="loading">
+                  <div class="loading-spinner"></div>
+                  <p>Завантаження трансляції...</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -1016,12 +1289,18 @@
         <div class="stream-info">
           <div class="stream-status">
             <div class="status-indicator" id="streamIndicator"></div>
-            <h3 id="streamStatusText">Перевіряю статус...</h3>
+            <div>
+              <h3 id="streamStatusText">Перевіряю статус...</h3>
+              <p style="margin-top: 5px; font-size: 1rem; color: var(--grey);" id="streamSubText">Онлайн трансляція на YouTube</p>
+            </div>
           </div>
           
           <p>Приєднуйся до прямої трансляції на YouTube! Коментуй, став питання та спілкуйся з іншими глядачами.</p>
           
-          <a href="#" class="link-btn" id="streamLink" style="margin-top: 20px; display: inline-block; width: auto;">Перейти до стріму</a>
+          <a href="#" class="stream-link-btn" id="streamLink">
+            <span>Перейти до стріму</span>
+            <i class="fas fa-arrow-right"></i>
+          </a>
           
           <div class="schedule">
             <h4><i class="far fa-calendar-alt"></i> РОЗКЛАД СТРІМІВ</h4>
@@ -1030,14 +1309,13 @@
               <li><span>Субота</span> <span>20:00 - 02:00</span></li>
               <li><span>Неділя</span> <span>Вихідний :)</span></li>
             </ul>
-            <p style="margin-top: 10px; font-size: 0.9rem; color: var(--grey);">* Час може змінюватись, слідкуйте за оновленнями в соцмережах</p>
+            <p>* Час може змінюватись, слідкуйте за оновленнями в соцмережах</p>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Latest Streams Section -->
   <section class="latest-streams">
     <div class="container">
       <div class="section-title">
@@ -1046,7 +1324,6 @@
       </div>
 
       <div class="streams-grid" id="latestStreamsContainer">
-        <!-- Streams will be loaded here by JavaScript -->
         <div class="loading">
           <div class="loading-spinner"></div>
           <p>Завантаження останніх стрімів...</p>
@@ -1055,7 +1332,6 @@
     </div>
   </section>
 
-  <!-- My PC Section -->
   <section class="pc-section" id="pc">
     <div class="container">
       <div class="section-title">
@@ -1154,7 +1430,6 @@
     </div>
   </section>
 
-  <!-- Footer -->
   <footer>
     <div class="container footer-content">
       <div class="social-links">
@@ -1187,13 +1462,9 @@
   </footer>
 
 <script>
-  // ==========================
-  // КОНФІГУРАЦІЯ API
-  // ==========================
   const CHANNEL_ID = "UCPMbLC6oJmGVXnMjUNp0CXg";
   const API_KEY = "AIzaSyA4xawh40f7rgqRgzO5IbANSLCgWV_BnVE";
   
-  // DOM елементи
   const statusIndicator = document.getElementById("statusIndicator");
   const statusText = document.getElementById("statusText");
   const streamIndicator = document.getElementById("streamIndicator");
@@ -1202,9 +1473,6 @@
   const playerContainer = document.getElementById("playerContainer");
   const latestStreamsContainer = document.getElementById("latestStreamsContainer");
 
-  // ==========================
-  // Допоміжні функції
-  // ==========================
   function formatDate(dateString) {
     const date = new Date(dateString);
     return date.toLocaleDateString("uk-UA", {
@@ -1223,12 +1491,8 @@
     }
   }
 
-  // ==========================
-  // Функції для роботи з YouTube API
-  // ==========================
 async function fetchStreamsFromAPI(maxResults = 3) {
   try {
-    // 1) Отримуємо uploads playlist каналу
     const channelUrl = `https://www.googleapis.com/youtube/v3/channels?key=${API_KEY}&id=${CHANNEL_ID}&part=contentDetails`;
     const channelRes = await fetch(channelUrl);
     if (!channelRes.ok) throw new Error(`Помилка channels API: ${channelRes.status}`);
@@ -1239,7 +1503,6 @@ async function fetchStreamsFromAPI(maxResults = 3) {
 
     if (!uploadsPlaylistId) return [];
 
-    // 2) Беремо останні відео з uploads playlist
     const playlistUrl = `https://www.googleapis.com/youtube/v3/playlistItems?key=${API_KEY}&playlistId=${uploadsPlaylistId}&part=snippet&maxResults=10`;
     const playlistRes = await fetch(playlistUrl);
     if (!playlistRes.ok) throw new Error(`Помилка playlistItems API: ${playlistRes.status}`);
@@ -1251,7 +1514,6 @@ async function fetchStreamsFromAPI(maxResults = 3) {
       .map(i => i.snippet?.resourceId?.videoId)
       .filter(Boolean);
 
-    // 3) Отримуємо деталі відео (і шукаємо стріми)
     const videosUrl = `https://www.googleapis.com/youtube/v3/videos?key=${API_KEY}&part=snippet,liveStreamingDetails&id=${videoIds.join(",")}`;
     const videosRes = await fetch(videosUrl);
     if (!videosRes.ok) throw new Error(`Помилка videos API: ${videosRes.status}`);
@@ -1259,10 +1521,8 @@ async function fetchStreamsFromAPI(maxResults = 3) {
     const videosData = await videosRes.json();
     if (!videosData.items || videosData.items.length === 0) return [];
 
-    // 4) Фільтруємо стріми
     let result = videosData.items.filter(v => v.liveStreamingDetails?.actualStartTime);
 
-    // якщо стрімів нема — показуємо просто останні відео
     if (result.length === 0) result = videosData.items;
 
     return result.slice(0, maxResults).map(v => ({
@@ -1281,11 +1541,8 @@ async function fetchStreamsFromAPI(maxResults = 3) {
   }
 }
 
-
-
   async function checkLiveStream() {
     try {
-      // Перевіряємо, чи є активний стрім
       const url = `https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${CHANNEL_ID}&part=snippet&type=video&eventType=live&maxResults=1`;
       
       const response = await fetch(url);
@@ -1312,43 +1569,50 @@ async function fetchStreamsFromAPI(maxResults = 3) {
     }
   }
 
-  // ==========================
-  // UI Функції
-  // ==========================
   function setOfflineUI() {
     statusIndicator.className = "status-indicator";
     statusText.innerHTML = "⚫ <strong>ЗАРАЗ ОФЛАЙН</strong>";
-
+    
     streamIndicator.className = "status-indicator";
     streamStatusText.innerHTML = "<strong>ЗАРАЗ ОФЛАЙН</strong>";
+    
+    document.getElementById("streamSubtitle").innerHTML = '<i class="fas fa-circle"></i> ОФЛАЙН';
+    document.getElementById("streamSubText").textContent = "Наступний стрім за розкладом";
+    
+    document.getElementById("playerLabel").innerHTML = '<i class="fas fa-video"></i> Останній стрім';
+    document.getElementById("playerLabel").classList.remove("live");
 
     streamLink.href = `https://www.youtube.com/@saxonuawot/live`;
-    streamLink.textContent = "Перейти до стріму";
+    streamLink.innerHTML = `<span>Перейти до стріму</span> <i class="fas fa-arrow-right"></i>`;
   }
 
   function setLiveUI() {
     statusIndicator.className = "status-indicator live";
     statusText.innerHTML = "🔴 <strong>LIVE ЗАРАЗ!</strong>";
-
+    
     streamIndicator.className = "status-indicator live";
     streamStatusText.innerHTML = "<strong>LIVE ЗАРАЗ!</strong>";
+    
+    document.getElementById("streamSubtitle").innerHTML = '<i class="fas fa-circle" style="color: #ff3333;"></i> LIVE ЗАРАЗ';
+    document.getElementById("streamSubText").textContent = "Пряма трансляція на YouTube";
+    
+    document.getElementById("playerLabel").innerHTML = '<i class="fas fa-broadcast-tower"></i> LIVE зараз';
+    document.getElementById("playerLabel").classList.add("live");
 
     streamLink.href = `https://www.youtube.com/@saxonuawot/live`;
-    streamLink.textContent = "Дивитись LIVE";
+    streamLink.innerHTML = `<span>Дивитись LIVE</span> <i class="fas fa-arrow-right"></i>`;
   }
 
   async function renderPlayerWithLatestStream() {
-    // Спочатку перевіряємо, чи є живий стрім
     const liveStatus = await checkLiveStream();
     
     if (liveStatus.isLive) {
-      // Якщо є живий стрім, показуємо його
       setLiveUI();
       
       playerContainer.innerHTML = `
         <iframe 
           width="100%" 
-          height="400" 
+          height="100%" 
           src="https://www.youtube.com/embed/${liveStatus.videoId}?autoplay=0&mute=1" 
           frameborder="0" 
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
@@ -1361,18 +1625,16 @@ async function fetchStreamsFromAPI(maxResults = 3) {
       return;
     }
     
-    // Якщо живого стріму немає, перевіряємо останні стріми
     setOfflineUI();
     const streams = await fetchStreamsFromAPI(1);
     
     if (streams && streams.length > 0) {
-      // Показуємо останній стрім
       const latestStream = streams[0];
       
       playerContainer.innerHTML = `
         <iframe 
           width="100%" 
-          height="400" 
+          height="100%" 
           src="https://www.youtube.com/embed/${latestStream.videoId}?autoplay=0&mute=1" 
           frameborder="0" 
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
@@ -1382,9 +1644,8 @@ async function fetchStreamsFromAPI(maxResults = 3) {
       `;
       
       streamLink.href = latestStream.link;
-      streamLink.textContent = "Дивитись останній стрім";
+      streamLink.innerHTML = `<span>Дивитись останній стрім</span> <i class="fas fa-arrow-right"></i>`;
     } else {
-      // Якщо немає стрімів, показуємо запасний варіант
       playerContainer.innerHTML = `
         <div style="text-align: center; padding: 40px;">
           <i class="fas fa-video-slash" style="font-size: 60px; color: var(--grey); margin-bottom: 20px;"></i>
@@ -1397,7 +1658,6 @@ async function fetchStreamsFromAPI(maxResults = 3) {
   }
 
   async function renderLatestStreams() {
-    // Показуємо індикатор завантаження
     latestStreamsContainer.innerHTML = `
       <div class="loading" style="grid-column: 1 / -1;">
         <div class="loading-spinner"></div>
@@ -1407,7 +1667,6 @@ async function fetchStreamsFromAPI(maxResults = 3) {
 
     const streams = await fetchStreamsFromAPI(3);
     
-    // Обробка помилок
     if (streams === null) {
       latestStreamsContainer.innerHTML = `
         <div class="api-error" style="grid-column: 1 / -1;">
@@ -1436,7 +1695,6 @@ async function fetchStreamsFromAPI(maxResults = 3) {
       return;
     }
     
-    // Відображаємо стріми (точно 3, якщо є)
     let html = '';
     
     streams.forEach((stream) => {
@@ -1455,8 +1713,9 @@ async function fetchStreamsFromAPI(maxResults = 3) {
                 <i class="far fa-calendar"></i> ${formatDate(stream.publishedAt)}
               </div>
             </div>
-            <a href="${stream.link}" class="stream-btn" target="_blank">
-              <i class="fas fa-play"></i> Дивитись запис
+            <a href="${stream.link}" class="stream-card-btn" target="_blank">
+              <span>Дивитись запис</span>
+              <i class="fas fa-play"></i>
             </a>
           </div>
         </div>
@@ -1466,15 +1725,11 @@ async function fetchStreamsFromAPI(maxResults = 3) {
     latestStreamsContainer.innerHTML = html;
   }
 
-  // ==========================
-  // ІНІЦІАЛІЗАЦІЯ
-  // ==========================
   async function initialize() {
     await renderPlayerWithLatestStream();
     await renderLatestStreams();
   }
 
-  // Мобільне меню
   function setupMobileMenu() {
     const mobileMenuBtn = document.querySelector(".mobile-menu-btn");
     const navLinks = document.querySelector(".nav-links");
@@ -1492,7 +1747,6 @@ async function fetchStreamsFromAPI(maxResults = 3) {
     });
   }
 
-  // Плавна прокрутка
   function setupSmoothScroll() {
     document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
       anchor.addEventListener("click", function (e) {
@@ -1517,7 +1771,6 @@ async function fetchStreamsFromAPI(maxResults = 3) {
     setupSmoothScroll();
     initialize();
 
-    // Оновлення кожні 5 хвилин
     setInterval(initialize, 5 * 60 * 1000);
   });
 </script>
