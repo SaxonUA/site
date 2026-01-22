@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="uk">Saxon_UA
+<html lang="uk">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>SaxonUA | World of Tanks Streamer</title>
+  <title>Saxon_UA | World of Tanks Streamer</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
 
@@ -554,237 +554,7 @@
           
           <a href="#" class="link-btn" id="streamLink" style="margin-top: 20px; display: inline-block; width: auto;">Перейти до стріму</a>
           
-          <div class="schedule"><!doctype html>
-<html lang="uk">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>SaxonUA | World of Tanks Streamer</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
-
-  <style>
-    /* Стилі залишаються такими ж як у попередній версії */
-    :root {
-      --primary: #e63946;
-      --primary-dark: #c1121f;
-      --secondary: #457b9d;
-      --dark: #1d3557;
-      --darker: #0d1b2a;
-      --light: #f1faee;
-      --accent: #ffd166;
-      --grey: #8d99ae;
-      --camouflage: linear-gradient(135deg, #5a6c3a 0%, #7d8c55 25%, #3a4a2a 50%, #5a6c3a 75%, #7d8c55 100%);
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: 'Roboto', sans-serif;
-      background-color: var(--darker);
-      color: var(--light);
-      line-height: 1.6;
-      overflow-x: hidden;
-      background-image: 
-        radial-gradient(circle at 10% 20%, rgba(29, 53, 87, 0.3) 0%, transparent 20%),
-        radial-gradient(circle at 90% 80%, rgba(69, 123, 157, 0.2) 0%, transparent 20%);
-    }
-
-    /* ... (решта стилів та сама як у попередньому коді) ... */
-  </style>
-</head>
-
-<body>
-  <!-- Вся розмітка залишається такою ж -->
-  <header>
-    <!-- ... -->
-  </header>
-
-  <section class="hero">
-    <div class="hero-bg"></div>
-    <div class="container hero-content">
-      <h2><span>СТРІМЕР</span> WORLD OF TANKS</h2>
-      <p>Привіт! Я <span class="highlight">SaxonUA</span> - український стрімер з гри World of Tanks.</p>
-      
-      <div class="stream-status" style="margin-top: 20px;">
-        <div class="status-indicator" id="statusIndicator"></div>
-        <h3 id="statusText">Перевіряю статус трансляції...</h3>
-      </div>
-    </div>
-  </section>
-
-  <section class="stream-section" id="stream">
-    <div class="container">
-      <div class="section-title">
-        <h2>ПРЯМИЙ ЕФІР</h2>
-      </div>
-
-      <div class="stream-container">
-        <div class="stream-player">
-          <div id="playerContainer" style="width: 100%; height: 400px; display: flex; align-items: center; justify-content: center; background-color: #000;">
-            <!-- Автоматично завантажиться останнє відео -->
-          </div>
-        </div>
-
-        <div class="stream-info">
-          <!-- Інформація про стрім -->
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Інші секції... -->
-
-  <script>
-    // ============================================
-    // БЕЗ API-КЛЮЧА - БЕЗПЕЧНА ВЕРСІЯ
-    // ============================================
-    
-    // 1. YouTube канал
-    const YOUTUBE_CHANNEL = '@saxonuawot';
-    
-    // 2. Останній запис зі стріму (можна змінити)
-    // Щоб отримати ID відео:
-    // - Зайдіть на ваше відео на YouTube
-    // - Скопіюйте ID після v= у посиланні
-    // Наприклад: https://www.youtube.com/watch?v=ABC123XYZ
-    // ID буде: ABC123XYZ
-    const LAST_STREAM_ID = "jZn8Mq3UhjM"; // Замініть на ваш ID
-    
-    // 3. Розклад стрімів (редагуйте за потребою)
-    const STREAM_SCHEDULE = [
-      { day: "Понеділок - П'ятниця", time: "19:00 - 23:00" },
-      { day: "Субота", time: "15:00 - 22:00" },
-      { day: "Неділя", time: "16:00 - 21:00" }
-    ];
-    
-    // 4. Статус стріму (можна змінювати вручну)
-    let isCurrentlyLive = false; // true - онлайн, false - офлайн
-    
-    // Елементи DOM
-    const statusIndicator = document.getElementById('statusIndicator');
-    const statusText = document.getElementById('statusText');
-    const streamIndicator = document.getElementById('streamIndicator');
-    const streamStatusText = document.getElementById('streamStatusText');
-    const streamLink = document.getElementById('streamLink');
-    const playerContainer = document.getElementById('playerContainer');
-    
-    // Функція для оновлення статусу
-    function updateStreamStatus(isLive) {
-      if (isLive) {
-        // Онлайн статус
-        statusIndicator.className = 'status-indicator live';
-        statusText.textContent = '🔴 ЗАРАЗ В ЕФІРІ!';
-        
-        if (streamIndicator) {
-          streamIndicator.className = 'status-indicator live';
-          streamStatusText.textContent = 'ПРЯМА ТРАНСЛЯЦІЯ';
-        }
-        
-        if (streamLink) {
-          streamLink.href = `https://www.youtube.com/${YOUTUBE_CHANNEL}/live`;
-          streamLink.textContent = 'Дивитись стрім';
-        }
-        
-        // Плеєр для LIVE стріму
-        playerContainer.innerHTML = `
-          <div style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center;">
-            <i class="fas fa-broadcast-tower" style="font-size: 70px; color: var(--primary); margin-bottom: 20px;"></i>
-            <h3 style="color: var(--primary); margin-bottom: 10px;">СТРІМ ТРИВАЄ!</h3>
-            <p style="margin-bottom: 20px;">Приєднуйся до прямої трансляції</p>
-            <a href="https://www.youtube.com/${YOUTUBE_CHANNEL}/live" 
-               class="link-btn" 
-               target="_blank" 
-               style="background: var(--primary); padding: 12px 30px; border-radius: 50px; text-decoration: none; color: white; font-weight: bold;">
-               ДИВИТИСЬ НА YOUTUBE
-            </a>
-          </div>
-        `;
-      } else {
-        // Офлайн статус - показуємо останній стрім
-        statusIndicator.className = 'status-indicator';
-        statusText.textContent = '⚫ ЗАРАЗ ОФЛАЙН';
-        
-        if (streamIndicator) {
-          streamIndicator.className = 'status-indicator';
-          streamStatusText.textContent = 'ЗАРАЗ ОФЛАЙН';
-        }
-        
-        if (streamLink) {
-          streamLink.href = `https://www.youtube.com/${YOUTUBE_CHANNEL}`;
-          streamLink.textContent = 'Перейти на канал';
-        }
-        
-        // Плеєр з останнім відео
-        playerContainer.innerHTML = `
-          <iframe 
-            width="100%" 
-            height="100%" 
-            src="https://www.youtube.com/embed/${LAST_STREAM_ID}?rel=0&modestbranding=1" 
-            frameborder="0" 
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-            allowfullscreen
-            title="Останній стрім SaxonUA">
-          </iframe>
-        `;
-      }
-    }
-    
-    // Функція для завантаження розкладу
-    function loadSchedule() {
-      const scheduleList = document.querySelector('.schedule ul');
-      if (scheduleList) {
-        scheduleList.innerHTML = '';
-        STREAM_SCHEDULE.forEach(item => {
-          const li = document.createElement('li');
-          li.innerHTML = `<span>${item.day}</span> <span>${item.time}</span>`;
-          scheduleList.appendChild(li);
-        });
-      }
-    }
-    
-    // Ініціалізація при завантаженні сторінки
-    document.addEventListener('DOMContentLoaded', () => {
-      // Встановлюємо статус стріму
-      updateStreamStatus(isCurrentlyLive);
-      
-      // Завантажуємо розклад
-      loadSchedule();
-      
-      // Можливість змінити статус стріму вручну (для тестування)
-      // Просто змініть значення isCurrentlyLive вище на true
-      
-      // Для реального використання:
-      // 1. Перед стрімом змініть isCurrentlyLive = true
-      // 2. Після стріму змініть isCurrentlyLive = false
-      // 3. Оновіть LAST_STREAM_ID на ID нового відео
-      
-      console.log("Сайт завантажено! Статус стріму: " + (isCurrentlyLive ? "ОНЛАЙН" : "ОФЛАЙН"));
-      console.log("Щоб змінити статус стріму, відредагуйте змінну isCurrentlyLive");
-    });
-    
-    // Простий спосіб для стрімера змінити статус
-    // Додайте цю функцію у консоль браузера під час стріму:
-    // window.goLive() - для статусу "ОНЛАЙН"
-    // window.goOffline() - для статусу "ОФЛАЙН"
-    window.goLive = function() {
-      isCurrentlyLive = true;
-      updateStreamStatus(true);
-      alert("Статус змінено на ОНЛАЙН");
-    };
-    
-    window.goOffline = function() {
-      isCurrentlyLive = false;
-      updateStreamStatus(false);
-      alert("Статус змінено на ОФЛАЙН");
-    };
-  </script>
-</body>
-</html>
+          <div class="schedule">
             <h4><i class="far fa-calendar-alt"></i> РОЗКЛАД СТРІМІВ</h4>
             <ul>
               <li><span>Понеділок - П'ятниця</span> <span>20:00 - 00:00</span></li>
@@ -971,7 +741,7 @@
       const isLive = false; // За замовчуванням офлайн
       
       updateStatus(isLive);
-    }qqqqqqqqqqqqqqqq_
+    }
     
     // Функція для показу інформації "Про мене"
     function showAbout() {
