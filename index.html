@@ -1645,19 +1645,7 @@ async function fetchStreamsFromAPI(maxResults = 3) {
         </iframe>
       `;
       
-      streamLink.href = latestStream.link;
-      streamLink.innerHTML = `<span>Дивитись останній стрім</span> <i class="fas fa-arrow-right"></i>`;
-    } else {
-      playerContainer.innerHTML = `
-        <div style="text-align: center; padding: 40px;">
-          <i class="fas fa-video-slash" style="font-size: 60px; color: var(--grey); margin-bottom: 20px;"></i>
-          <h3>Немає доступних стрімів</h3>
-          <p>Перейдіть на канал для перегляду контенту</p>
-          <a href="https://www.youtube.com/@saxonuawot" class="link-btn" style="margin-top: 20px;">Перейти на канал</a>
-        </div>
-      `;
-    }
-  }
+
 
   async function renderLatestStreams() {
     latestStreamsContainer.innerHTML = `
