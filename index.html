@@ -1527,53 +1527,29 @@
 
 async function fetchStreamsFromAPI(maxResults = 3) {
   try {
-    const channelUrl = `https://www.googleapis.com/youtube/v3/channels?key=${API_KEY}&id=${CHANNEL_ID}&part=contentDetails`;
-    const channelRes = await fetch(channelUrl);
-    if (!channelRes.ok) throw new Error(`Помилка channels API: ${channelRes.status}`);
+    const url = `https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${CHANNEL_ID}&part=snippet&eventType=completed&type=video&order=date&maxResults=${maxResults}`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`Помилка search API: ${res.status}`);
 
-    const channelData = await channelRes.json();
-    const uploadsPlaylistId =
-      channelData.items?.[0]?.contentDetails?.relatedPlaylists?.uploads;
+    const data = await res.json();
+    if (!data.items || data.items.length === 0) return [];
 
-    if (!uploadsPlaylistId) return [];
-
-    const playlistUrl = `https://www.googleapis.com/youtube/v3/playlistItems?key=${API_KEY}&playlistId=${uploadsPlaylistId}&part=snippet&maxResults=10`;
-    const playlistRes = await fetch(playlistUrl);
-    if (!playlistRes.ok) throw new Error(`Помилка playlistItems API: ${playlistRes.status}`);
-
-    const playlistData = await playlistRes.json();
-    if (!playlistData.items || playlistData.items.length === 0) return [];
-
-    const videoIds = playlistData.items
-      .map(i => i.snippet?.resourceId?.videoId)
-      .filter(Boolean);
-
-    const videosUrl = `https://www.googleapis.com/youtube/v3/videos?key=${API_KEY}&part=snippet,liveStreamingDetails&id=${videoIds.join(",")}`;
-    const videosRes = await fetch(videosUrl);
-    if (!videosRes.ok) throw new Error(`Помилка videos API: ${videosRes.status}`);
-
-    const videosData = await videosRes.json();
-    if (!videosData.items || videosData.items.length === 0) return [];
-
-    let result = videosData.items.filter(v => v.liveStreamingDetails?.actualStartTime);
-
-    if (result.length === 0) result = videosData.items;
-
-    return result.slice(0, maxResults).map(v => ({
-      videoId: v.id,
-      title: v.snippet.title,
-      publishedAt: v.snippet.publishedAt,
+    return data.items.map(item => ({
+      videoId: item.id.videoId,
+      title: item.snippet.title,
+      publishedAt: item.snippet.publishedAt,
       thumbnail:
-        v.snippet.thumbnails.high?.url ||
-        v.snippet.thumbnails.medium?.url ||
-        v.snippet.thumbnails.default?.url,
-      link: `https://www.youtube.com/watch?v=${v.id}`,
+        item.snippet.thumbnails.high?.url ||
+        item.snippet.thumbnails.medium?.url ||
+        item.snippet.thumbnails.default?.url,
+      link: `https://www.youtube.com/watch?v=${item.id.videoId}`,
     }));
   } catch (error) {
-    console.error("Помилка завантаження:", error);
+    console.error("Помилка завантаження стрімів:", error);
     return null;
   }
 }
+
 
 async function checkLiveStream() {
   try {
