@@ -59,7 +59,7 @@
       backdrop-filter: blur(10px);
       border-bottom: 2px solid var(--primary);
       z-index: 1000;
-      height: 90px; /* Фіксована висота хедера */
+      height: 90px;
       display: flex;
       align-items: center;
     }
@@ -76,11 +76,11 @@
       display: flex;
       align-items: center;
       gap: 15px;
-      flex-shrink: 0; /* Запобігає стисканню */
+      flex-shrink: 0;
     }
 
     .logo-icon {
-      width: clamp(70px, 80px, 90px); /* Адаптивний розмір для ПК */
+      width: clamp(70px, 80px, 90px);
       height: clamp(70px, 80px, 90px);
       border-radius: 0;
       display: flex;
@@ -163,11 +163,11 @@
 
     @media (max-width: 768px) {
       header {
-        height: 80px; /* Трохи менше на мобільних */
+        height: 80px;
       }
 
       .logo-icon {
-        width: clamp(60px, 70px, 80px); /* Менше, але все ще добре видно */
+        width: clamp(60px, 70px, 80px);
         height: clamp(60px, 70px, 80px);
       }
 
@@ -222,7 +222,6 @@
         display: block;
       }
 
-      /* Приховуємо заголовок "SaXon WOT" у Hero на мобільних */
       .hero-left h2 {
         display: none;
       }
@@ -1037,7 +1036,6 @@
       transform: translateX(5px);
     }
 
-    /* ОНОВЛЕНІ СТИЛІ ДЛЯ ФУТЕРА */
     footer {
       padding: 40px 0;
       background-color: rgba(13, 27, 42, 0.9);
@@ -1102,7 +1100,7 @@
     }
 
     .footer-content .logo-icon {
-      width: 60px; /* Нормальний розмір для футера */
+      width: 60px;
       height: 60px;
       font-size: 20px;
       margin: 0 auto;
@@ -1312,7 +1310,6 @@
         font-size: 1.8rem;
       }
 
-      /* 🌟 Оптимізація Hero секції на мобільних */
       @media (max-width: 768px) {
         .hero {
           padding-top: 10px;
@@ -1668,6 +1665,53 @@
   const playerContainer = document.getElementById("playerContainer");
   const latestStreamsContainer = document.getElementById("latestStreamsContainer");
 
+  // Константи для кешування (мілісекунди)
+  const CACHE_TTL = {
+    UPLOADS_PLAYLIST: 24 * 60 * 60 * 1000, // 24 години
+    LATEST_STREAMS: 30 * 60 * 1000,        // 30 хвилин
+    LIVE_STATUS: 2 * 60 * 1000             // 2 хвилини
+  };
+
+  const CACHE_KEYS = {
+    UPLOADS_PLAYLIST: 'uploadsPlaylistId',
+    LATEST_STREAMS: 'latestStreams',
+    LIVE_STATUS: 'liveStatus'
+  };
+
+  // Захист від подвійних викликів
+  let isInitializing = false;
+  let lastUpdateTime = 0;
+  const MIN_UPDATE_INTERVAL = 10 * 60 * 1000; // 10 хвилин
+
+  // Утиліти для кешування
+  function setCache(key, data) {
+    const cacheItem = {
+      data,
+      timestamp: Date.now()
+    };
+    localStorage.setItem(key, JSON.stringify(cacheItem));
+  }
+
+  function getCache(key, maxAge) {
+    const cached = localStorage.getItem(key);
+    if (!cached) return null;
+    
+    try {
+      const cacheItem = JSON.parse(cached);
+      const age = Date.now() - cacheItem.timestamp;
+      
+      if (age < maxAge) {
+        return cacheItem.data;
+      } else {
+        localStorage.removeItem(key);
+        return null;
+      }
+    } catch (e) {
+      localStorage.removeItem(key);
+      return null;
+    }
+  }
+
   function formatDate(dateString) {
     const date = new Date(dateString);
     return date.toLocaleDateString("uk-UA", {
@@ -1677,89 +1721,122 @@
     });
   }
 
-  function extractVideoIdFromLink(link) {
+  // Отримання uploads playlist ID
+  async function getUploadsPlaylistId() {
+    // Перевірка кешу
+    const cached = getCache(CACHE_KEYS.UPLOADS_PLAYLIST, CACHE_TTL.UPLOADS_PLAYLIST);
+    if (cached) return cached;
+
     try {
-      const url = new URL(link);
-      return url.searchParams.get("v");
-    } catch {
-      return null;
+      const url = `https://www.googleapis.com/youtube/v3/channels?key=${API_KEY}&id=${CHANNEL_ID}&part=contentDetails`;
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`Помилка channels API: ${res.status}`);
+
+      const data = await res.json();
+      const uploadsPlaylistId = data.items?.[0]?.contentDetails?.relatedPlaylists?.uploads;
+      
+      if (!uploadsPlaylistId) throw new Error("Не вдалося отримати uploads playlist ID");
+
+      // Зберегти в кеш
+      setCache(CACHE_KEYS.UPLOADS_PLAYLIST, uploadsPlaylistId);
+      return uploadsPlaylistId;
+    } catch (error) {
+      console.error("Помилка отримання uploads playlist ID:", error);
+      throw error;
     }
   }
 
-  async function fetchStreamsFromAPI(maxResults = 3) {
+  // Отримання останніх відео з uploads плейлиста
+  async function getLatestVideosFromUploads(maxResults = 3) {
+    // Перевірка кешу
+    const cached = getCache(CACHE_KEYS.LATEST_STREAMS, CACHE_TTL.LATEST_STREAMS);
+    if (cached) return cached;
+
     try {
-      const url = `https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${CHANNEL_ID}&part=snippet&eventType=completed&type=video&order=date&maxResults=${maxResults}`;
+      const uploadsPlaylistId = await getUploadsPlaylistId();
+      const url = `https://www.googleapis.com/youtube/v3/playlistItems?key=${API_KEY}&playlistId=${uploadsPlaylistId}&part=snippet&maxResults=${maxResults}`;
       const res = await fetch(url);
-      if (!res.ok) throw new Error(`Помилка search API: ${res.status}`);
+      if (!res.ok) throw new Error(`Помилка playlistItems API: ${res.status}`);
 
       const data = await res.json();
       if (!data.items || data.items.length === 0) return [];
 
-      return data.items.map(item => ({
-        videoId: item.id.videoId,
+      const videos = data.items.map(item => ({
+        videoId: item.snippet.resourceId.videoId,
         title: item.snippet.title,
         publishedAt: item.snippet.publishedAt,
-        thumbnail:
-          item.snippet.thumbnails.high?.url ||
-          item.snippet.thumbnails.medium?.url ||
-          item.snippet.thumbnails.default?.url,
-        link: `https://www.youtube.com/watch?v=${item.id.videoId}`,
+        thumbnail: item.snippet.thumbnails?.high?.url || 
+                  item.snippet.thumbnails?.medium?.url || 
+                  item.snippet.thumbnails?.default?.url,
+        link: `https://www.youtube.com/watch?v=${item.snippet.resourceId.videoId}`,
       }));
+
+      // Зберегти в кеш
+      setCache(CACHE_KEYS.LATEST_STREAMS, videos);
+      return videos;
     } catch (error) {
-      console.error("Помилка завантаження стрімів:", error);
+      console.error("Помилка отримання останніх відео:", error);
       return null;
     }
   }
 
-
+  // Перевірка LIVE статусу
   async function checkLiveStream() {
+    // Перевірка кешу
+    const cached = getCache(CACHE_KEYS.LIVE_STATUS, CACHE_TTL.LIVE_STATUS);
+    if (cached) return cached;
+
     try {
-      const channelUrl = `https://www.googleapis.com/youtube/v3/channels?key=${API_KEY}&id=${CHANNEL_ID}&part=contentDetails`;
-      const channelRes = await fetch(channelUrl);
-      if (!channelRes.ok) throw new Error("channels API error");
-
-      const channelData = await channelRes.json();
-      const uploadsPlaylistId =
-        channelData.items?.[0]?.contentDetails?.relatedPlaylists?.uploads;
-
-      if (!uploadsPlaylistId) return { isLive: false };
-
+      const uploadsPlaylistId = await getUploadsPlaylistId();
+      
+      // Отримати останнє відео з uploads
       const playlistUrl = `https://www.googleapis.com/youtube/v3/playlistItems?key=${API_KEY}&playlistId=${uploadsPlaylistId}&part=snippet&maxResults=1`;
       const playlistRes = await fetch(playlistUrl);
-      if (!playlistRes.ok) throw new Error("playlistItems API error");
+      if (!playlistRes.ok) throw new Error("Помилка playlistItems API");
 
       const playlistData = await playlistRes.json();
       const lastVideoId = playlistData.items?.[0]?.snippet?.resourceId?.videoId;
 
-      if (!lastVideoId) return { isLive: false };
+      if (!lastVideoId) {
+        const result = { isLive: false };
+        setCache(CACHE_KEYS.LIVE_STATUS, result);
+        return result;
+      }
 
+      // Перевірити деталі відео
       const videosUrl = `https://www.googleapis.com/youtube/v3/videos?key=${API_KEY}&part=snippet,liveStreamingDetails&id=${lastVideoId}`;
       const videosRes = await fetch(videosUrl);
-      if (!videosRes.ok) throw new Error("videos API error");
+      if (!videosRes.ok) throw new Error("Помилка videos API");
 
       const videosData = await videosRes.json();
       const video = videosData.items?.[0];
 
-      if (!video) return { isLive: false };
-
-      const lsd = video.liveStreamingDetails;
-
-      if (lsd?.actualStartTime && !lsd?.actualEndTime) {
-        return {
-          isLive: true,
-          videoId: video.id,
-          title: video.snippet.title,
-          publishedAt: video.snippet.publishedAt,
-        };
+      if (!video) {
+        const result = { isLive: false };
+        setCache(CACHE_KEYS.LIVE_STATUS, result);
+        return result;
       }
 
-      return { isLive: false };
+      const lsd = video.liveStreamingDetails;
+      const isLive = lsd?.actualStartTime && !lsd?.actualEndTime;
+
+      const result = {
+        isLive,
+        videoId: video.id,
+        title: video.snippet.title,
+        publishedAt: video.snippet.publishedAt,
+      };
+
+      // Зберегти в кеш
+      setCache(CACHE_KEYS.LIVE_STATUS, result);
+      return result;
     } catch (error) {
       console.error("Помилка перевірки LIVE:", error);
-      return { isLive: false };
+      const result = { isLive: false };
+      setCache(CACHE_KEYS.LIVE_STATUS, result);
+      return result;
     }
   }
-
 
   function setOfflineUI() {
     statusIndicator.className = "status-indicator";
@@ -1790,7 +1867,7 @@
   async function renderPlayerWithLatestStream() {
     const liveStatus = await checkLiveStream();
     
-    if (liveStatus.isLive) {
+    if (liveStatus.isLive && liveStatus.videoId) {
       setLiveUI();
       
       playerContainer.innerHTML = `
@@ -1806,28 +1883,29 @@
       `;
       
       streamLink.href = `https://www.youtube.com/watch?v=${liveStatus.videoId}`;
+      streamLinkText.textContent = "Дивитись LIVE";
       return;
     }
     
     setOfflineUI();
-    const streams = await fetchStreamsFromAPI(1);
+    const videos = await getLatestVideosFromUploads(1);
     
-    if (streams && streams.length > 0) {
-      const latestStream = streams[0];
+    if (videos && videos.length > 0) {
+      const latestVideo = videos[0];
       
       playerContainer.innerHTML = `
         <iframe 
           width="100%" 
           height="100%" 
-          src="https://www.youtube.com/embed/${latestStream.videoId}?autoplay=0&mute=1" 
+          src="https://www.youtube.com/embed/${latestVideo.videoId}?autoplay=0&mute=1" 
           frameborder="0" 
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
           allowfullscreen
-          title="${latestStream.title}">
+          title="${latestVideo.title}">
         </iframe>
       `;
       
-      streamLink.href = latestStream.link;
+      streamLink.href = latestVideo.link;
       streamLinkText.textContent = "Дивитись останній стрім";
     } else {
       playerContainer.innerHTML = `
@@ -1849,9 +1927,9 @@
       </div>
     `;
 
-    const streams = await fetchStreamsFromAPI(3);
+    const videos = await getLatestVideosFromUploads(3);
     
-    if (streams === null) {
+    if (videos === null) {
       latestStreamsContainer.innerHTML = `
         <div class="api-error" style="grid-column: 1 / -1;">
           <i class="fas fa-exclamation-triangle"></i>
@@ -1865,7 +1943,7 @@
       return;
     }
     
-    if (streams.length === 0) {
+    if (videos.length === 0) {
       latestStreamsContainer.innerHTML = `
         <div style="grid-column: 1 / -1; text-align: center; padding: 40px;">
           <i class="fas fa-video-slash" style="font-size: 60px; color: var(--grey); margin-bottom: 20px;"></i>
@@ -1881,23 +1959,23 @@
     
     let html = '';
     
-    streams.forEach((stream) => {
+    videos.forEach((video) => {
       html += `
         <div class="stream-card">
           <div class="stream-thumbnail">
-            <img src="${stream.thumbnail}" alt="${stream.title}" loading="lazy">
+            <img src="${video.thumbnail}" alt="${video.title}" loading="lazy">
             <div class="stream-duration">
               <i class="fas fa-broadcast-tower"></i> СТРІМ
             </div>
           </div>
           <div class="stream-info-content">
-            <h4>${stream.title}</h4>
+            <h4>${video.title}</h4>
             <div class="stream-meta">
               <div class="stream-date">
-                <i class="far fa-calendar"></i> ${formatDate(stream.publishedAt)}
+                <i class="far fa-calendar"></i> ${formatDate(video.publishedAt)}
               </div>
             </div>
-            <a href="${stream.link}" class="stream-card-btn" target="_blank">
+            <a href="${video.link}" class="stream-card-btn" target="_blank">
               <span>Дивитись запис</span>
               <i class="fas fa-play"></i>
             </a>
@@ -1910,8 +1988,29 @@
   }
 
   async function initialize() {
-    await renderPlayerWithLatestStream();
-    await renderLatestStreams();
+    // Захист від подвійних викликів
+    if (isInitializing) return;
+    
+    // Перевірка часу останнього оновлення
+    const now = Date.now();
+    if (now - lastUpdateTime < MIN_UPDATE_INTERVAL) {
+      // Не оновлюємо частіше ніж кожні 10 хвилин
+      return;
+    }
+    
+    isInitializing = true;
+    lastUpdateTime = now;
+    
+    try {
+      await Promise.all([
+        renderPlayerWithLatestStream(),
+        renderLatestStreams()
+      ]);
+    } catch (error) {
+      console.error("Помилка ініціалізації:", error);
+    } finally {
+      isInitializing = false;
+    }
   }
 
   function setupMobileMenu() {
@@ -1970,7 +2069,8 @@
     setupSmoothScroll();
     initialize();
 
-    setInterval(initialize, 30 * 60 * 1000);
+    // Оновлюємо кожні 10 хвилин замість 30
+    setInterval(initialize, MIN_UPDATE_INTERVAL);
   });
 </script>
 
