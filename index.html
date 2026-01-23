@@ -814,7 +814,7 @@
     }
 
     .stream-link-btn:hover i {
-      transform: translateX(5px);
+      transform: translateX(-6px);
     }
 
     .latest-streams {
@@ -1323,11 +1323,10 @@
         </div>
 
         <div class="stream-info">
-<a href="#" class="stream-link-btn" id="streamLink">
-  <i class="fas fa-arrow-left"></i>
-  <span>Стрім Онлайн, або останній стрім</span>
-</a>
-
+          <a href="#" class="stream-link-btn" id="streamLink">
+            <i class="fas fa-arrow-left"></i>
+            <span id="streamLinkText">Стрім Онлайн, або останній стрім</span>
+          </a>
           
           <p>Приєднуйся до прямої трансляції на YouTube! Коментуй, став питання та спілкуйся з іншими глядачами.</p>
           
@@ -1367,8 +1366,6 @@
       </div>
 
       <div class="pc-card">
-        </div>
-
         <div class="pc-specs">
           <div class="spec-item">
             <div class="spec-icon">
@@ -1492,6 +1489,7 @@
   const statusIndicator = document.getElementById("statusIndicator");
   const statusText = document.getElementById("statusText");
   const streamLink = document.getElementById("streamLink");
+  const streamLinkText = document.getElementById("streamLinkText");
   const playerContainer = document.getElementById("playerContainer");
   const latestStreamsContainer = document.getElementById("latestStreamsContainer");
 
@@ -1602,7 +1600,7 @@ async function checkLiveStream() {
     document.getElementById("playerLabel").classList.remove("live");
 
     streamLink.href = `https://www.youtube.com/@saxonuawot/live`;
-    streamLink.innerHTML = `<span>Дивитись останній стрім</span> <i class="fas fa-arrow-right"></i>`;
+    streamLinkText.textContent = "Дивитись останній стрім";
   }
 
   function setLiveUI() {
@@ -1615,7 +1613,7 @@ async function checkLiveStream() {
     document.getElementById("playerLabel").classList.add("live");
 
     streamLink.href = `https://www.youtube.com/@saxonuawot/live`;
-    streamLink.innerHTML = `<span>Дивитись LIVE</span> <i class="fas fa-arrow-right"></i>`;
+    streamLinkText.textContent = "Дивитись LIVE";
   }
 
   async function renderPlayerWithLatestStream() {
@@ -1659,7 +1657,7 @@ async function checkLiveStream() {
       `;
       
       streamLink.href = latestStream.link;
-      streamLink.innerHTML = `<span>Дивитись останній стрім</span> <i class="fas fa-arrow-right"></i>`;
+      streamLinkText.textContent = "Дивитись останній стрім";
     } else {
       playerContainer.innerHTML = `
         <div style="text-align: center; padding: 40px;">
