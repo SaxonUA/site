@@ -1176,6 +1176,48 @@
       .section-title h2 {
         font-size: 1.8rem;
       }
+
+      /* 🌟 Оптимізація Hero секції на мобільних */
+@media (max-width: 768px) {
+  .hero {
+    padding-top: 10px;
+    padding-bottom: 0;
+  }
+
+  .hero-content {
+    flex-direction: column;
+    gap: 12px; /* зменшуємо відстань між блоками */
+    align-items: center;
+    text-align: center;
+  }
+
+  .hero-left,
+  .hero-right {
+    width: 100%;
+    max-width: none;
+  }
+
+  .hero-right {
+    margin-top: 0; /* повністю прибираємо верхній margin */
+  }
+
+  .hero-image {
+    max-width: 180px; /* зменшений розмір на мобільних */
+    width: 60%;
+    height: auto;
+  }
+
+  /* Текст і кнопка ближче до картинки */
+  .donate-hero-btn-container {
+    margin-bottom: 10px;
+  }
+
+  .hero-subtext {
+    margin-top: 6px;
+    font-size: 0.95rem;
+  }
+}
+
     }
   </style>
 </head>
