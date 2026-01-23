@@ -1323,20 +1323,12 @@
         </div>
 
         <div class="stream-info">
-          <div class="stream-status">
-            <div class="status-indicator" id="streamIndicator"></div>
-            <div>
-              <h3 id="streamStatusText">Перевіряю статус...</h3>
-              <p style="margin-top: 5px; font-size: 1rem; color: var(--grey);" id="streamSubText">Онлайн трансляція на YouTube</p>
-            </div>
-          </div>
-          
-          <p>Приєднуйся до прямої трансляції на YouTube! Коментуй, став питання та спілкуйся з іншими глядачами.</p>
-          
           <a href="#" class="stream-link-btn" id="streamLink">
-            <span>Перейти до стріму</span>
+            <span>Дивитись останній стрім</span>
             <i class="fas fa-arrow-right"></i>
           </a>
+          
+          <p>Приєднуйся до прямої трансляції на YouTube! Коментуй, став питання та спілкуйся з іншими глядачами.</p>
           
           <div class="schedule">
             <h4><i class="far fa-calendar-alt"></i> РОЗКЛАД СТРІМІВ</h4>
@@ -1501,8 +1493,6 @@
   
   const statusIndicator = document.getElementById("statusIndicator");
   const statusText = document.getElementById("statusText");
-  const streamIndicator = document.getElementById("streamIndicator");
-  const streamStatusText = document.getElementById("streamStatusText");
   const streamLink = document.getElementById("streamLink");
   const playerContainer = document.getElementById("playerContainer");
   const latestStreamsContainer = document.getElementById("latestStreamsContainer");
@@ -1608,28 +1598,20 @@ async function checkLiveStream() {
     statusIndicator.className = "status-indicator";
     statusText.innerHTML = "⚫ <strong>ЗАРАЗ ОФЛАЙН</strong>";
     
-    streamIndicator.className = "status-indicator";
-    streamStatusText.innerHTML = "<strong>ЗАРАЗ ОФЛАЙН</strong>";
-    
     document.getElementById("streamSubtitle").innerHTML = '<i class="fas fa-circle"></i> ОФЛАЙН';
-    document.getElementById("streamSubText").textContent = "Наступний стрім за розкладом";
     
     document.getElementById("playerLabel").innerHTML = '<i class="fas fa-video"></i> Останній стрім';
     document.getElementById("playerLabel").classList.remove("live");
 
     streamLink.href = `https://www.youtube.com/@saxonuawot/live`;
-    streamLink.innerHTML = `<span>Перейти до стріму</span> <i class="fas fa-arrow-right"></i>`;
+    streamLink.innerHTML = `<span>Дивитись останній стрім</span> <i class="fas fa-arrow-right"></i>`;
   }
 
   function setLiveUI() {
     statusIndicator.className = "status-indicator live";
     statusText.innerHTML = "🔴 <strong>LIVE ЗАРАЗ!</strong>";
     
-    streamIndicator.className = "status-indicator live";
-    streamStatusText.innerHTML = "<strong>LIVE ЗАРАЗ!</strong>";
-    
     document.getElementById("streamSubtitle").innerHTML = '<i class="fas fa-circle" style="color: #ff3333;"></i> LIVE ЗАРАЗ';
-    document.getElementById("streamSubText").textContent = "Пряма трансляція на YouTube";
     
     document.getElementById("playerLabel").innerHTML = '<i class="fas fa-broadcast-tower"></i> LIVE зараз';
     document.getElementById("playerLabel").classList.add("live");
