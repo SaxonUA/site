@@ -363,10 +363,6 @@
       color: #ff0000;
     }
 
-    .donate-hero-btn i:last-child {
-      font-size: 1.2rem;
-    }
-
     .donate-hero-btn:hover i:last-child {
       transform: translateX(8px);
     }
@@ -1355,6 +1351,186 @@
         }
       }
     }
+
+    /* Donate Modal Styles */
+    .donate-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.85);
+      z-index: 2000;
+      justify-content: center;
+      align-items: center;
+      backdrop-filter: blur(8px);
+      transition: all 0.3s ease;
+    }
+
+    .donate-modal.open {
+      display: flex;
+    }
+
+    .donate-modal-content {
+      background: linear-gradient(145deg, rgba(29, 53, 87, 0.98), rgba(13, 27, 42, 0.98));
+      backdrop-filter: blur(12px);
+      border-radius: 28px;
+      padding: 32px 28px;
+      max-width: 420px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 30px 50px rgba(0, 0, 0, 0.6), 0 0 0 2px rgba(255, 122, 0, 0.3);
+      animation: modalSlideUp 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+      border: 1px solid rgba(255, 122, 0, 0.5);
+    }
+
+    @keyframes modalSlideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .donate-modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      border-bottom: 2px solid rgba(255, 122, 0, 0.5);
+      padding-bottom: 15px;
+    }
+
+    .donate-modal-header h3 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.7rem;
+      background: linear-gradient(135deg, #ffcc00, #ff8800);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin: 0;
+    }
+
+    .donate-modal-close {
+      background: none;
+      border: none;
+      color: var(--light);
+      font-size: 28px;
+      cursor: pointer;
+      transition: transform 0.2s, color 0.2s;
+      line-height: 1;
+      padding: 0 8px;
+    }
+
+    .donate-modal-close:hover {
+      color: var(--primary);
+      transform: scale(1.1);
+    }
+
+    .donate-modal-icon {
+      font-size: 52px;
+      color: #ffcc00;
+      margin: 15px 0 10px;
+      animation: pulseIcon 1.5s infinite;
+    }
+
+    @keyframes pulseIcon {
+      0% { transform: scale(1); text-shadow: 0 0 0 rgba(255, 204, 0, 0); }
+      50% { transform: scale(1.08); text-shadow: 0 0 12px rgba(255, 204, 0, 0.8); }
+      100% { transform: scale(1); text-shadow: 0 0 0 rgba(255, 204, 0, 0); }
+    }
+
+    .donate-modal-text {
+      margin: 20px 0 10px;
+      font-size: 1rem;
+      color: #ddd;
+    }
+
+    .donate-link-display {
+      background: rgba(0, 0, 0, 0.6);
+      padding: 12px;
+      border-radius: 60px;
+      font-size: 0.85rem;
+      word-break: break-all;
+      margin: 20px 0;
+      border: 1px solid rgba(255, 122, 0, 0.6);
+      font-family: monospace;
+      color: var(--accent);
+    }
+
+    .donate-modal-buttons {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      margin-top: 15px;
+      flex-wrap: wrap;
+    }
+
+    .donate-modal-btn {
+      flex: 1;
+      padding: 14px 20px;
+      border-radius: 50px;
+      font-weight: 800;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      font-family: 'Orbitron', sans-serif;
+      letter-spacing: 1px;
+    }
+
+    .donate-modal-btn.open-link {
+      background: linear-gradient(135deg, #ffcc00, #ffaa00);
+      color: #1a1a1a;
+      box-shadow: 0 6px 14px rgba(255, 170, 0, 0.4);
+    }
+
+    .donate-modal-btn.open-link:hover {
+      transform: translateY(-3px);
+      background: linear-gradient(135deg, #ffaa00, #ff9900);
+      box-shadow: 0 12px 22px rgba(255, 170, 0, 0.5);
+    }
+
+    .donate-modal-btn.copy-link {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(4px);
+      color: white;
+      border: 1px solid rgba(255, 122, 0, 0.6);
+    }
+
+    .donate-modal-btn.copy-link:hover {
+      background: rgba(255, 122, 0, 0.6);
+      transform: translateY(-2px);
+      border-color: #ffaa00;
+    }
+
+    .donate-modal-toast {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(12px);
+      color: #ffcc00;
+      padding: 12px 24px;
+      border-radius: 60px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      z-index: 2100;
+      border-left: 4px solid #ffcc00;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s;
+      white-space: nowrap;
+    }
   </style>
 </head>
 
@@ -1391,7 +1567,7 @@
         <h2>SaXon <span>WOT</span></h2>
 
         <div class="donate-hero-btn-container">
-          <a href="https://saxon.donatik.ua/" class="donate-hero-btn" target="_blank">
+          <a href="#" class="donate-hero-btn" id="heroDonateBtn">
             <i class="fas fa-heart"></i>
             <span class="btn-text">Підтримати стрімера</span>
             <i class="fas fa-chevron-right"></i>
@@ -1424,7 +1600,7 @@
           </div>
           <h3>Донат</h3>
           <p>Підтримай мій канал та допоможи покращувати якість контенту</p>
-          <a href="https://saxon.donatik.ua/" class="link-btn" target="_blank">Підтримати</a>
+          <a href="#" class="link-btn" id="gridDonateBtn">Підтримати</a>
         </div>
 
         <div class="link-card">
@@ -1654,7 +1830,118 @@
     </div>
   </footer>
 
+  <!-- Donate Modal -->
+  <div id="donateModal" class="donate-modal">
+    <div class="donate-modal-content">
+      <div class="donate-modal-header">
+        <h3><i class="fas fa-heart"></i> Підтримка</h3>
+        <button class="donate-modal-close" id="closeDonateModalBtn">&times;</button>
+      </div>
+      <div class="donate-modal-icon">
+        <i class="fas fa-gift"></i>
+      </div>
+      <div class="donate-modal-text">
+        Дякую за бажання підтримати канал! Оберіть зручний спосіб:
+      </div>
+      <div class="donate-link-display" id="donateLinkDisplay">https://saxon.donatik.ua/</div>
+      <div class="donate-modal-buttons">
+        <button class="donate-modal-btn open-link" id="modalOpenLinkBtn">
+          <i class="fas fa-external-link-alt"></i> Відкрити донат
+        </button>
+        <button class="donate-modal-btn copy-link" id="modalCopyLinkBtn">
+          <i class="fas fa-copy"></i> Скопіювати посилання
+        </button>
+      </div>
+    </div>
+  </div>
+  <div id="toastMessage" class="donate-modal-toast"></div>
+
 <script>
+  // ----- DONATE MODAL LOGIC -----
+  const DONATE_URL = "https://saxon.donatik.ua/";
+  const modal = document.getElementById("donateModal");
+  const closeModalBtn = document.getElementById("closeDonateModalBtn");
+  const modalOpenLink = document.getElementById("modalOpenLinkBtn");
+  const modalCopyLink = document.getElementById("modalCopyLinkBtn");
+  const donateLinkDisplay = document.getElementById("donateLinkDisplay");
+  const toastMsgDiv = document.getElementById("toastMessage");
+
+  function showToast(message, duration = 2500) {
+    toastMsgDiv.textContent = message;
+    toastMsgDiv.style.opacity = "1";
+    setTimeout(() => {
+      toastMsgDiv.style.opacity = "0";
+    }, duration);
+  }
+
+  function openDonateModal() {
+    if (donateLinkDisplay) donateLinkDisplay.innerText = DONATE_URL;
+    modal.classList.add("open");
+    document.body.style.overflow = "hidden";
+  }
+
+  function closeDonateModal() {
+    modal.classList.remove("open");
+    document.body.style.overflow = "";
+  }
+
+  function handleOpenDonate() {
+    window.open(DONATE_URL, '_blank');
+    closeDonateModal();
+  }
+
+  function handleCopyLink() {
+    navigator.clipboard.writeText(DONATE_URL).then(() => {
+      showToast("✅ Посилання скопійовано: " + DONATE_URL, 2000);
+    }).catch(() => {
+      showToast("❌ Не вдалося скопіювати, спробуйте вручну", 2000);
+    });
+  }
+
+  // Close modal events
+  if (closeModalBtn) closeModalBtn.addEventListener("click", closeDonateModal);
+  if (modalOpenLink) modalOpenLink.addEventListener("click", handleOpenDonate);
+  if (modalCopyLink) modalCopyLink.addEventListener("click", handleCopyLink);
+
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) closeDonateModal();
+  });
+
+  // Replace all donate buttons with modal trigger
+  const heroDonate = document.getElementById("heroDonateBtn");
+  const gridDonate = document.getElementById("gridDonateBtn");
+  
+  if (heroDonate) {
+    heroDonate.removeAttribute("target");
+    heroDonate.href = "javascript:void(0)";
+    heroDonate.addEventListener("click", (e) => {
+      e.preventDefault();
+      openDonateModal();
+    });
+  }
+  
+  if (gridDonate) {
+    gridDonate.removeAttribute("target");
+    gridDonate.href = "javascript:void(0)";
+    gridDonate.addEventListener("click", (e) => {
+      e.preventDefault();
+      openDonateModal();
+    });
+  }
+  
+  // Additional safety for any future .donate-hero-btn or .link-btn inside donate-card
+  document.querySelectorAll(".donate-card .link-btn, .donate-hero-btn").forEach(btn => {
+    if (btn.id !== "heroDonateBtn" && btn.id !== "gridDonateBtn") {
+      btn.removeAttribute("target");
+      btn.href = "javascript:void(0)";
+      btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        openDonateModal();
+      });
+    }
+  });
+
+  // ----- EXISTING YOUTUBE / STREAM JS (unchanged except avoid overriding donate)-----
   const CHANNEL_ID = "UCPMbLC6oJmGVXnMjUNp0CXg";
   const API_KEY = "AIzaSyDuSA94sh4h8eV3SN2iJjIGwz85_bG0VEM";
   
@@ -1665,11 +1952,10 @@
   const playerContainer = document.getElementById("playerContainer");
   const latestStreamsContainer = document.getElementById("latestStreamsContainer");
 
-  // Константи для кешування (мілісекунди)
   const CACHE_TTL = {
-    UPLOADS_PLAYLIST: 24 * 60 * 60 * 1000, // 24 години
-    LATEST_STREAMS: 30 * 60 * 1000,        // 30 хвилин
-    LIVE_STATUS: 2 * 60 * 1000             // 2 хвилини
+    UPLOADS_PLAYLIST: 24 * 60 * 60 * 1000,
+    LATEST_STREAMS: 30 * 60 * 1000,
+    LIVE_STATUS: 2 * 60 * 1000
   };
 
   const CACHE_KEYS = {
@@ -1678,34 +1964,23 @@
     LIVE_STATUS: 'liveStatus'
   };
 
-  // Захист від подвійних викликів
   let isInitializing = false;
   let lastUpdateTime = 0;
-  const MIN_UPDATE_INTERVAL = 10 * 60 * 1000; // 10 хвилин
+  const MIN_UPDATE_INTERVAL = 10 * 60 * 1000;
 
-  // Утиліти для кешування
   function setCache(key, data) {
-    const cacheItem = {
-      data,
-      timestamp: Date.now()
-    };
+    const cacheItem = { data, timestamp: Date.now() };
     localStorage.setItem(key, JSON.stringify(cacheItem));
   }
 
   function getCache(key, maxAge) {
     const cached = localStorage.getItem(key);
     if (!cached) return null;
-    
     try {
       const cacheItem = JSON.parse(cached);
-      const age = Date.now() - cacheItem.timestamp;
-      
-      if (age < maxAge) {
-        return cacheItem.data;
-      } else {
-        localStorage.removeItem(key);
-        return null;
-      }
+      if (Date.now() - cacheItem.timestamp < maxAge) return cacheItem.data;
+      localStorage.removeItem(key);
+      return null;
     } catch (e) {
       localStorage.removeItem(key);
       return null;
@@ -1714,30 +1989,19 @@
 
   function formatDate(dateString) {
     const date = new Date(dateString);
-    return date.toLocaleDateString("uk-UA", {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-    });
+    return date.toLocaleDateString("uk-UA", { day: "numeric", month: "long", year: "numeric" });
   }
 
-  // Отримання uploads playlist ID
   async function getUploadsPlaylistId() {
-    // Перевірка кешу
     const cached = getCache(CACHE_KEYS.UPLOADS_PLAYLIST, CACHE_TTL.UPLOADS_PLAYLIST);
     if (cached) return cached;
-
     try {
       const url = `https://www.googleapis.com/youtube/v3/channels?key=${API_KEY}&id=${CHANNEL_ID}&part=contentDetails`;
       const res = await fetch(url);
       if (!res.ok) throw new Error(`Помилка channels API: ${res.status}`);
-
       const data = await res.json();
       const uploadsPlaylistId = data.items?.[0]?.contentDetails?.relatedPlaylists?.uploads;
-      
       if (!uploadsPlaylistId) throw new Error("Не вдалося отримати uploads playlist ID");
-
-      // Зберегти в кеш
       setCache(CACHE_KEYS.UPLOADS_PLAYLIST, uploadsPlaylistId);
       return uploadsPlaylistId;
     } catch (error) {
@@ -1746,32 +2010,23 @@
     }
   }
 
-  // Отримання останніх відео з uploads плейлиста
   async function getLatestVideosFromUploads(maxResults = 3) {
-    // Перевірка кешу
     const cached = getCache(CACHE_KEYS.LATEST_STREAMS, CACHE_TTL.LATEST_STREAMS);
     if (cached) return cached;
-
     try {
       const uploadsPlaylistId = await getUploadsPlaylistId();
       const url = `https://www.googleapis.com/youtube/v3/playlistItems?key=${API_KEY}&playlistId=${uploadsPlaylistId}&part=snippet&maxResults=${maxResults}`;
       const res = await fetch(url);
       if (!res.ok) throw new Error(`Помилка playlistItems API: ${res.status}`);
-
       const data = await res.json();
       if (!data.items || data.items.length === 0) return [];
-
       const videos = data.items.map(item => ({
         videoId: item.snippet.resourceId.videoId,
         title: item.snippet.title,
         publishedAt: item.snippet.publishedAt,
-        thumbnail: item.snippet.thumbnails?.high?.url || 
-                  item.snippet.thumbnails?.medium?.url || 
-                  item.snippet.thumbnails?.default?.url,
+        thumbnail: item.snippet.thumbnails?.high?.url || item.snippet.thumbnails?.medium?.url || item.snippet.thumbnails?.default?.url,
         link: `https://www.youtube.com/watch?v=${item.snippet.resourceId.videoId}`,
       }));
-
-      // Зберегти в кеш
       setCache(CACHE_KEYS.LATEST_STREAMS, videos);
       return videos;
     } catch (error) {
@@ -1780,54 +2035,34 @@
     }
   }
 
-  // Перевірка LIVE статусу
   async function checkLiveStream() {
-    // Перевірка кешу
     const cached = getCache(CACHE_KEYS.LIVE_STATUS, CACHE_TTL.LIVE_STATUS);
     if (cached) return cached;
-
     try {
       const uploadsPlaylistId = await getUploadsPlaylistId();
-      
-      // Отримати останнє відео з uploads
       const playlistUrl = `https://www.googleapis.com/youtube/v3/playlistItems?key=${API_KEY}&playlistId=${uploadsPlaylistId}&part=snippet&maxResults=1`;
       const playlistRes = await fetch(playlistUrl);
       if (!playlistRes.ok) throw new Error("Помилка playlistItems API");
-
       const playlistData = await playlistRes.json();
       const lastVideoId = playlistData.items?.[0]?.snippet?.resourceId?.videoId;
-
       if (!lastVideoId) {
         const result = { isLive: false };
         setCache(CACHE_KEYS.LIVE_STATUS, result);
         return result;
       }
-
-      // Перевірити деталі відео
       const videosUrl = `https://www.googleapis.com/youtube/v3/videos?key=${API_KEY}&part=snippet,liveStreamingDetails&id=${lastVideoId}`;
       const videosRes = await fetch(videosUrl);
       if (!videosRes.ok) throw new Error("Помилка videos API");
-
       const videosData = await videosRes.json();
       const video = videosData.items?.[0];
-
       if (!video) {
         const result = { isLive: false };
         setCache(CACHE_KEYS.LIVE_STATUS, result);
         return result;
       }
-
       const lsd = video.liveStreamingDetails;
       const isLive = lsd?.actualStartTime && !lsd?.actualEndTime;
-
-      const result = {
-        isLive,
-        videoId: video.id,
-        title: video.snippet.title,
-        publishedAt: video.snippet.publishedAt,
-      };
-
-      // Зберегти в кеш
+      const result = { isLive, videoId: video.id, title: video.snippet.title, publishedAt: video.snippet.publishedAt };
       setCache(CACHE_KEYS.LIVE_STATUS, result);
       return result;
     } catch (error) {
@@ -1841,171 +2076,70 @@
   function setOfflineUI() {
     statusIndicator.className = "status-indicator";
     statusText.innerHTML = " <strong>ЗАРАЗ ОФЛАЙН</strong>";
-    
     document.getElementById("streamSubtitle").innerHTML = '<i class="fas fa-circle"></i> ОФЛАЙН';
-    
     document.getElementById("playerLabel").innerHTML = '<i class="fas fa-video"></i> Останній стрім';
     document.getElementById("playerLabel").classList.remove("live");
-
-    streamLink.href = `https://www.youtube.com/@saxonuawot/live`;
-    streamLinkText.textContent = "Дивитись останній стрім";
+    if(streamLink) streamLink.href = `https://www.youtube.com/@saxonuawot/live`;
+    if(streamLinkText) streamLinkText.textContent = "Дивитись останній стрім";
   }
 
   function setLiveUI() {
     statusIndicator.className = "status-indicator live";
     statusText.innerHTML = " <strong>LIVE ЗАРАЗ!</strong>";
-    
     document.getElementById("streamSubtitle").innerHTML = '<i class="fas fa-circle" style="color: #ff3333;"></i> LIVE ЗАРАЗ';
-    
     document.getElementById("playerLabel").innerHTML = '<i class="fas fa-broadcast-tower"></i> LIVE зараз';
     document.getElementById("playerLabel").classList.add("live");
-
-    streamLink.href = `https://www.youtube.com/@saxonuawot/live`;
-    streamLinkText.textContent = "Дивитись LIVE";
+    if(streamLink) streamLink.href = `https://www.youtube.com/@saxonuawot/live`;
+    if(streamLinkText) streamLinkText.textContent = "Дивитись LIVE";
   }
 
   async function renderPlayerWithLatestStream() {
     const liveStatus = await checkLiveStream();
-    
     if (liveStatus.isLive && liveStatus.videoId) {
       setLiveUI();
-      
-      playerContainer.innerHTML = `
-        <iframe 
-          width="100%" 
-          height="100%" 
-          src="https://www.youtube.com/embed/${liveStatus.videoId}?autoplay=0&mute=1" 
-          frameborder="0" 
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-          allowfullscreen
-          title="${liveStatus.title}">
-        </iframe>
-      `;
-      
-      streamLink.href = `https://www.youtube.com/watch?v=${liveStatus.videoId}`;
-      streamLinkText.textContent = "Дивитись LIVE";
+      playerContainer.innerHTML = `<iframe width="100%" height="100%" src="https://www.youtube.com/embed/${liveStatus.videoId}?autoplay=0&mute=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen title="${liveStatus.title}"></iframe>`;
+      if(streamLink) streamLink.href = `https://www.youtube.com/watch?v=${liveStatus.videoId}`;
+      if(streamLinkText) streamLinkText.textContent = "Дивитись LIVE";
       return;
     }
-    
     setOfflineUI();
     const videos = await getLatestVideosFromUploads(1);
-    
     if (videos && videos.length > 0) {
       const latestVideo = videos[0];
-      
-      playerContainer.innerHTML = `
-        <iframe 
-          width="100%" 
-          height="100%" 
-          src="https://www.youtube.com/embed/${latestVideo.videoId}?autoplay=0&mute=1" 
-          frameborder="0" 
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-          allowfullscreen
-          title="${latestVideo.title}">
-        </iframe>
-      `;
-      
-      streamLink.href = latestVideo.link;
-      streamLinkText.textContent = "Дивитись останній стрім";
+      playerContainer.innerHTML = `<iframe width="100%" height="100%" src="https://www.youtube.com/embed/${latestVideo.videoId}?autoplay=0&mute=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen title="${latestVideo.title}"></iframe>`;
+      if(streamLink) streamLink.href = latestVideo.link;
+      if(streamLinkText) streamLinkText.textContent = "Дивитись останній стрім";
     } else {
-      playerContainer.innerHTML = `
-        <div style="text-align: center; padding: 40px;">
-          <i class="fas fa-video-slash" style="font-size: 60px; color: var(--grey); margin-bottom: 20px;"></i>
-          <h3>Немає доступних стрімів</h3>
-          <p>Перейдіть на канал для перегляду контенту</p>
-          <a href="https://www.youtube.com/@saxonuawot" class="link-btn" style="margin-top: 20px;">Перейти на канал</a>
-        </div>
-      `;
+      playerContainer.innerHTML = `<div style="text-align: center; padding: 40px;"><i class="fas fa-video-slash" style="font-size: 60px; color: var(--grey); margin-bottom: 20px;"></i><h3>Немає доступних стрімів</h3><p>Перейдіть на канал для перегляду контенту</p><a href="https://www.youtube.com/@saxonuawot" class="link-btn" style="margin-top: 20px;">Перейти на канал</a></div>`;
     }
   }
 
   async function renderLatestStreams() {
-    latestStreamsContainer.innerHTML = `
-      <div class="loading" style="grid-column: 1 / -1;">
-        <div class="loading-spinner"></div>
-        <p>Завантаження стрімів...</p>
-      </div>
-    `;
-
+    latestStreamsContainer.innerHTML = `<div class="loading" style="grid-column: 1 / -1;"><div class="loading-spinner"></div><p>Завантаження стрімів...</p></div>`;
     const videos = await getLatestVideosFromUploads(3);
-    
     if (videos === null) {
-      latestStreamsContainer.innerHTML = `
-        <div class="api-error" style="grid-column: 1 / -1;">
-          <i class="fas fa-exclamation-triangle"></i>
-          <h3>Не вдалося завантажити стріми</h3>
-          <p>Перевірте підключення до інтернету або спробуйте пізніше.</p>
-          <a href="https://www.youtube.com/@saxonuawot/streams" class="link-btn" target="_blank" style="margin-top: 15px;">
-            <i class="fab fa-youtube"></i> Дивитися стріми на YouTube
-          </a>
-        </div>
-      `;
+      latestStreamsContainer.innerHTML = `<div class="api-error" style="grid-column: 1 / -1;"><i class="fas fa-exclamation-triangle"></i><h3>Не вдалося завантажити стріми</h3><p>Перевірте підключення до інтернету або спробуйте пізніше.</p><a href="https://www.youtube.com/@saxonuawot/streams" class="link-btn" target="_blank" style="margin-top: 15px;"><i class="fab fa-youtube"></i> Дивитися стріми на YouTube</a></div>`;
       return;
     }
-    
     if (videos.length === 0) {
-      latestStreamsContainer.innerHTML = `
-        <div style="grid-column: 1 / -1; text-align: center; padding: 40px;">
-          <i class="fas fa-video-slash" style="font-size: 60px; color: var(--grey); margin-bottom: 20px;"></i>
-          <h3>Завершених стрімів ще немає</h3>
-          <p>Перший стрім з'явиться тут після його завершення.</p>
-          <a href="https://www.youtube.com/@saxonuawot" class="link-btn" target="_blank" style="margin-top: 15px;">
-            <i class="fab fa-youtube"></i> Перейти на канал
-          </a>
-        </div>
-      `;
+      latestStreamsContainer.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; padding: 40px;"><i class="fas fa-video-slash" style="font-size: 60px; color: var(--grey); margin-bottom: 20px;"></i><h3>Завершених стрімів ще немає</h3><p>Перший стрім з'явиться тут після його завершення.</p><a href="https://www.youtube.com/@saxonuawot" class="link-btn" target="_blank" style="margin-top: 15px;"><i class="fab fa-youtube"></i> Перейти на канал</a></div>`;
       return;
     }
-    
     let html = '';
-    
     videos.forEach((video) => {
-      html += `
-        <div class="stream-card">
-          <div class="stream-thumbnail">
-            <img src="${video.thumbnail}" alt="${video.title}" loading="lazy">
-            <div class="stream-duration">
-              <i class="fas fa-broadcast-tower"></i> СТРІМ
-            </div>
-          </div>
-          <div class="stream-info-content">
-            <h4>${video.title}</h4>
-            <div class="stream-meta">
-              <div class="stream-date">
-                <i class="far fa-calendar"></i> ${formatDate(video.publishedAt)}
-              </div>
-            </div>
-            <a href="${video.link}" class="stream-card-btn" target="_blank">
-              <span>Дивитись запис</span>
-              <i class="fas fa-play"></i>
-            </a>
-          </div>
-        </div>
-      `;
+      html += `<div class="stream-card"><div class="stream-thumbnail"><img src="${video.thumbnail}" alt="${video.title}" loading="lazy"><div class="stream-duration"><i class="fas fa-broadcast-tower"></i> СТРІМ</div></div><div class="stream-info-content"><h4>${video.title}</h4><div class="stream-meta"><div class="stream-date"><i class="far fa-calendar"></i> ${formatDate(video.publishedAt)}</div></div><a href="${video.link}" class="stream-card-btn" target="_blank"><span>Дивитись запис</span><i class="fas fa-play"></i></a></div></div>`;
     });
-    
     latestStreamsContainer.innerHTML = html;
   }
 
   async function initialize() {
-    // Захист від подвійних викликів
     if (isInitializing) return;
-    
-    // Перевірка часу останнього оновлення
     const now = Date.now();
-    if (now - lastUpdateTime < MIN_UPDATE_INTERVAL) {
-      // Не оновлюємо частіше ніж кожні 10 хвилин
-      return;
-    }
-    
+    if (now - lastUpdateTime < MIN_UPDATE_INTERVAL) return;
     isInitializing = true;
     lastUpdateTime = now;
-    
     try {
-      await Promise.all([
-        renderPlayerWithLatestStream(),
-        renderLatestStreams()
-      ]);
+      await Promise.all([renderPlayerWithLatestStream(), renderLatestStreams()]);
     } catch (error) {
       console.error("Помилка ініціалізації:", error);
     } finally {
@@ -2016,50 +2150,20 @@
   function setupMobileMenu() {
     const mobileMenuBtn = document.querySelector(".mobile-menu-btn");
     const navLinks = document.querySelector(".nav-links");
-
-    mobileMenuBtn.addEventListener("click", () => {
-      navLinks.classList.toggle("open");
-    });
-
-    document.querySelectorAll(".nav-links a").forEach((link) => {
-      link.addEventListener("click", () => {
-        if (window.innerWidth <= 768) {
-          navLinks.classList.remove("open");
-        }
-      });
-    });
-
-    window.addEventListener('resize', () => {
-      if (window.innerWidth > 768) {
-        navLinks.classList.remove('open');
-      }
-    });
-
-    document.addEventListener('click', (e) => {
-      if (window.innerWidth <= 768 && 
-          !navLinks.contains(e.target) && 
-          !mobileMenuBtn.contains(e.target) &&
-          navLinks.classList.contains('open')) {
-        navLinks.classList.remove('open');
-      }
-    });
+    mobileMenuBtn.addEventListener("click", () => navLinks.classList.toggle("open"));
+    document.querySelectorAll(".nav-links a").forEach((link) => link.addEventListener("click", () => { if (window.innerWidth <= 768) navLinks.classList.remove("open"); }));
+    window.addEventListener('resize', () => { if (window.innerWidth > 768) navLinks.classList.remove('open'); });
+    document.addEventListener('click', (e) => { if (window.innerWidth <= 768 && !navLinks.contains(e.target) && !mobileMenuBtn.contains(e.target) && navLinks.classList.contains('open')) navLinks.classList.remove('open'); });
   }
 
   function setupSmoothScroll() {
     document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
       anchor.addEventListener("click", function (e) {
-        if (this.getAttribute("href") === "#") return;
-
+        if (this.getAttribute("href") === "#" || this.getAttribute("href") === "javascript:void(0)") return;
         e.preventDefault();
         const targetId = this.getAttribute("href");
         const targetElement = document.querySelector(targetId);
-
-        if (targetElement) {
-          window.scrollTo({
-            top: targetElement.offsetTop - 80,
-            behavior: "smooth",
-          });
-        }
+        if (targetElement) window.scrollTo({ top: targetElement.offsetTop - 80, behavior: "smooth" });
       });
     });
   }
@@ -2068,8 +2172,6 @@
     setupMobileMenu();
     setupSmoothScroll();
     initialize();
-
-    // Оновлюємо кожні 10 хвилин замість 30
     setInterval(initialize, MIN_UPDATE_INTERVAL);
   });
 </script>
