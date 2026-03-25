@@ -34,7 +34,7 @@
       color: var(--light);
       line-height: 1.6;
       overflow-x: hidden;
-      background-image: 
+      background-image:
         radial-gradient(circle at 10% 20%, rgba(29, 53, 87, 0.3) 0%, transparent 20%),
         radial-gradient(circle at 90% 80%, rgba(69, 123, 157, 0.2) 0%, transparent 20%);
     }
@@ -220,7 +220,7 @@
     }
 
     .hero {
-      padding: 20px 0 0px;
+      padding: 20px 0 0;
       position: relative;
       overflow: hidden;
     }
@@ -240,9 +240,9 @@
 
     .hero-content {
       display: flex;
-      align-items: center;       
-      justify-content: center; 
-      gap: 80px;               
+      align-items: center;
+      justify-content: center;
+      gap: 80px;
       max-width: 1200px;
       margin: 0 auto;
       text-align: left;
@@ -253,9 +253,9 @@
       min-width: 300px;
       display: flex;
       flex-direction: column;
-      align-items: flex-start;  
-      justify-content: center;  
-      gap: 20px;              
+      align-items: flex-start;
+      justify-content: center;
+      gap: 20px;
     }
 
     .hero-right {
@@ -426,7 +426,7 @@
         max-width: 600px;
         margin: 40px auto 0;
       }
-      
+
       .donate-card {
         grid-column: span 2;
       }
@@ -436,7 +436,7 @@
       .links-grid {
         grid-template-columns: 1fr;
       }
-      
+
       .donate-card {
         grid-column: 1;
       }
@@ -540,22 +540,6 @@
       width: 100%;
       height: 5px;
       background: linear-gradient(90deg, var(--primary), var(--accent), var(--primary));
-    }
-
-    .pc-header {
-      text-align: center;
-      margin-bottom: 30px;
-    }
-
-    .pc-header h3 {
-      font-size: 2.2rem;
-      color: var(--primary);
-      margin-bottom: 10px;
-    }
-
-    .pc-header p {
-      color: var(--grey);
-      font-size: 1.1rem;
     }
 
     .pc-specs {
@@ -698,13 +682,9 @@
       border-radius: 16px;
     }
 
-    /* HYBRID PLAYER STYLES */
     .video-preview {
       position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      inset: 0;
       cursor: pointer;
       background-size: cover;
       background-position: center;
@@ -717,10 +697,7 @@
     .video-preview::before {
       content: '';
       position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      inset: 0;
       background: rgba(0, 0, 0, 0.4);
       transition: background 0.3s ease;
     }
@@ -751,12 +728,49 @@
       box-shadow: 0 0 40px rgba(255, 122, 0, 0.8);
     }
 
+    .video-preview-overlay {
+      position: absolute;
+      left: 20px;
+      right: 20px;
+      bottom: 20px;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      pointer-events: none;
+    }
+
+    .video-preview-badge {
+      width: fit-content;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      background: rgba(13, 27, 42, 0.85);
+      color: var(--light);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+
+    .video-preview-badge.live {
+      background: rgba(255, 51, 51, 0.9);
+      color: white;
+      box-shadow: 0 0 18px rgba(255, 51, 51, 0.45);
+    }
+
+    .video-preview-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: white;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.7);
+      max-width: 90%;
+      line-height: 1.35;
+    }
+
     .video-iframe-container {
       position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      inset: 0;
     }
 
     .video-iframe-container iframe {
@@ -957,11 +971,34 @@
       background: linear-gradient(to top, rgba(13, 27, 42, 0.9), transparent);
     }
 
+    .stream-duration {
+      position: absolute;
+      bottom: 15px;
+      right: 15px;
+      background: rgba(0, 0, 0, 0.85);
+      color: white;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      z-index: 2;
+    }
+
     .stream-info-content {
       padding: 25px;
       flex-grow: 1;
       display: flex;
       flex-direction: column;
+    }
+
+    .stream-info-content h4 {
+      font-family: 'Inter', sans-serif !important;
+      font-weight: 700;
+      letter-spacing: 0;
+      text-transform: none;
     }
 
     .stream-meta {
@@ -1267,26 +1304,37 @@
         text-align: center;
         gap: 20px;
       }
+
       .hero-left {
         align-items: center;
       }
+
       .hero-subtext {
         text-align: center;
       }
+
       .stream-container {
         flex-direction: column;
       }
+
       .hero h2 {
         font-size: 2rem;
       }
+
       .donate-hero-btn {
         padding: 18px 30px;
         font-size: 1.1rem;
       }
+
       .play-button {
         width: 60px;
         height: 60px;
         font-size: 24px;
+      }
+
+      .video-preview-title {
+        font-size: 0.9rem;
+        max-width: 100%;
       }
     }
   </style>
@@ -1312,7 +1360,7 @@
         <a href="#pc">МІЙ ПК</a>
       </nav>
 
-      <button class="mobile-menu-btn">
+      <button class="mobile-menu-btn" aria-label="Відкрити меню">
         <i class="fas fa-bars"></i>
       </button>
     </div>
@@ -1323,6 +1371,7 @@
     <div class="container hero-content">
       <div class="hero-left">
         <h2>SaXon <span>WOT</span></h2>
+
         <div class="donate-hero-btn-container">
           <a href="#" class="donate-hero-btn" id="heroDonateBtn">
             <i class="fas fa-heart"></i>
@@ -1331,11 +1380,13 @@
           </a>
           <p class="hero-subtext">Ваша підтримка допомагає розвивати канал та покращувати якість контенту!</p>
         </div>
+
         <div class="stream-status">
           <div class="status-indicator" id="statusIndicator"></div>
           <h3 id="statusText">Перевіряю статус трансляції...</h3>
         </div>
       </div>
+
       <div class="hero-right">
         <img src="https://raw.githubusercontent.com/SaxonUA/site/main/saxon2.png" alt="Saxon_UA" class="hero-image">
       </div>
@@ -1347,6 +1398,7 @@
       <div class="section-title">
         <h2>МОЇ ПОСИЛАННЯ</h2>
       </div>
+
       <div class="links-grid">
         <div class="link-card donate-card" id="donate">
           <div class="link-icon" style="background: linear-gradient(135deg, #ffd166, #e9c46a);">
@@ -1356,37 +1408,41 @@
           <p>Підтримай мій канал та допоможи покращувати якість контенту</p>
           <a href="#" class="link-btn" id="gridDonateBtn">Підтримати</a>
         </div>
+
         <div class="link-card">
           <div class="link-icon" style="background: linear-gradient(135deg, #FF0000, #CC0000);">
             <i class="fab fa-youtube"></i>
           </div>
           <h3>YouTube</h3>
           <p>Основна платформа для стрімів та відео. Підписуйся та вмикай сповіщення!</p>
-          <a href="https://www.youtube.com/@saxonuawot" class="link-btn" target="_blank">Перейти</a>
+          <a href="https://www.youtube.com/@saxonuawot" class="link-btn" target="_blank" rel="noopener noreferrer">Перейти</a>
         </div>
+
         <div class="link-card">
           <div class="link-icon" style="background: linear-gradient(135deg, #9146FF, #6441A5);">
             <i class="fab fa-twitch"></i>
           </div>
           <h3>Twitch</h3>
           <p>Додаткові стріми та спілкування. Заходь під час стримів!</p>
-          <a href="https://www.twitch.tv/saxon_wot" class="link-btn" target="_blank">Перейти</a>
+          <a href="https://www.twitch.tv/saxon_wot" class="link-btn" target="_blank" rel="noopener noreferrer">Перейти</a>
         </div>
+
         <div class="link-card">
           <div class="link-icon" style="background: linear-gradient(135deg, #000000, #333333);">
             <i class="fab fa-tiktok"></i>
           </div>
           <h3>TikTok</h3>
           <p>Короткі відео, хайлайти та цікаві моменти зі стрімів</p>
-          <a href="https://www.tiktok.com/@saxon_ua_wot" class="link-btn" target="_blank">Перейти</a>
+          <a href="https://www.tiktok.com/@saxon_ua_wot" class="link-btn" target="_blank" rel="noopener noreferrer">Перейти</a>
         </div>
+
         <div class="link-card">
           <div class="link-icon" style="background: linear-gradient(135deg, #0088cc, #34B7F1);">
             <i class="fab fa-telegram"></i>
           </div>
           <h3>Telegram</h3>
           <p>Канал з анонсами стрімів та спільнота для спілкування</p>
-          <a href="https://t.me/wotsaxon" class="link-btn" target="_blank">Перейти</a>
+          <a href="https://t.me/wotsaxon" class="link-btn" target="_blank" rel="noopener noreferrer">Перейти</a>
         </div>
       </div>
     </div>
@@ -1402,11 +1458,13 @@
           <i class="fas fa-circle"></i> LIVE / Офлайн
         </div>
       </div>
+
       <div class="stream-container">
         <div class="stream-player">
           <div class="player-label" id="playerLabel">
             <i class="fas fa-broadcast-tower"></i> Останній стрім
           </div>
+
           <div class="player-wrapper">
             <div class="player-aspect-ratio" id="playerContainer">
               <div class="loading">
@@ -1416,12 +1474,15 @@
             </div>
           </div>
         </div>
+
         <div class="stream-info">
-          <a href="#" class="stream-link-btn" id="streamLink">
+          <a href="#" class="stream-link-btn" id="streamLink" target="_blank" rel="noopener noreferrer">
             <i class="fas fa-arrow-left"></i>
-            <span id="streamLinkText">Стрім Онлайн, або останній стрім</span>
+            <span id="streamLinkText">Стрім онлайн або останній стрім</span>
           </a>
+
           <p>Приєднуйся до прямої трансляції на YouTube! Коментуй, став питання та спілкуйся з іншими глядачами.</p>
+
           <div class="schedule">
             <h4><i class="far fa-calendar-alt"></i> РОЗКЛАД СТРІМІВ</h4>
             <ul>
@@ -1441,6 +1502,7 @@
       <div class="section-title">
         <h2>ОСТАННІ СТРІМИ та ВІДЕО</h2>
       </div>
+
       <div class="streams-grid" id="latestStreamsContainer">
         <div class="loading">
           <div class="loading-spinner"></div>
@@ -1455,16 +1517,48 @@
       <div class="section-title">
         <h2>МІЙ ПК</h2>
       </div>
+
       <div class="pc-card">
         <div class="pc-specs">
-          <div class="spec-item"><div class="spec-icon"><i class="fas fa-microchip"></i></div><div class="spec-content"><h4>Процесор</h4><p>AMD Ryzen 7 7800X3D</p></div></div>
-          <div class="spec-item"><div class="spec-icon"><i class="fas fa-gamepad"></i></div><div class="spec-content"><h4>Відеокарта</h4><p>NVIDIA GeForce RTX 5070 Ti</p></div></div>
-          <div class="spec-item"><div class="spec-icon"><i class="fas fa-memory"></i></div><div class="spec-content"><h4>Оперативна пам'ять</h4><p>32GB DDR5 7200MHz</p></div></div>
-          <div class="spec-item"><div class="spec-icon"><i class="fas fa-hdd"></i></div><div class="spec-content"><h4>Накопичувач</h4><p>SSD NVMe 1TB + 1TB</p></div></div>
-          <div class="spec-item"><div class="spec-icon"><i class="fas fa-microchip"></i></div><div class="spec-content"><h4>Материнська плата</h4><p>MSI B650 Gaming Plus WiFi</p></div></div>
-          <div class="spec-item"><div class="spec-icon"><i class="fas fa-fan"></i></div><div class="spec-content"><h4>Охолодження</h4><p>Be Quiet Dark Rock Pro 4</p></div></div>
-          <div class="spec-item"><div class="spec-icon"><i class="fas fa-bolt"></i></div><div class="spec-content"><h4>Блок живлення</h4><p>850W 80+ Gold Certified</p></div></div>
-          <div class="spec-item"><div class="spec-icon"><i class="fas fa-tv"></i></div><div class="spec-content"><h4>Монітор</h4><p>32" 1440p @ 144Hz</p></div></div>
+          <div class="spec-item">
+            <div class="spec-icon"><i class="fas fa-microchip"></i></div>
+            <div class="spec-content"><h4>Процесор</h4><p>AMD Ryzen 7 7800X3D</p></div>
+          </div>
+
+          <div class="spec-item">
+            <div class="spec-icon"><i class="fas fa-gamepad"></i></div>
+            <div class="spec-content"><h4>Відеокарта</h4><p>NVIDIA GeForce RTX 5070 Ti</p></div>
+          </div>
+
+          <div class="spec-item">
+            <div class="spec-icon"><i class="fas fa-memory"></i></div>
+            <div class="spec-content"><h4>Оперативна пам'ять</h4><p>32GB DDR5 7200MHz</p></div>
+          </div>
+
+          <div class="spec-item">
+            <div class="spec-icon"><i class="fas fa-hdd"></i></div>
+            <div class="spec-content"><h4>Накопичувач</h4><p>SSD NVMe 1TB + 1TB</p></div>
+          </div>
+
+          <div class="spec-item">
+            <div class="spec-icon"><i class="fas fa-microchip"></i></div>
+            <div class="spec-content"><h4>Материнська плата</h4><p>MSI B650 Gaming Plus WiFi</p></div>
+          </div>
+
+          <div class="spec-item">
+            <div class="spec-icon"><i class="fas fa-fan"></i></div>
+            <div class="spec-content"><h4>Охолодження</h4><p>Be Quiet Dark Rock Pro 4</p></div>
+          </div>
+
+          <div class="spec-item">
+            <div class="spec-icon"><i class="fas fa-bolt"></i></div>
+            <div class="spec-content"><h4>Блок живлення</h4><p>850W 80+ Gold Certified</p></div>
+          </div>
+
+          <div class="spec-item">
+            <div class="spec-icon"><i class="fas fa-tv"></i></div>
+            <div class="spec-content"><h4>Монітор</h4><p>32" 1440p @ 144Hz</p></div>
+          </div>
         </div>
       </div>
     </div>
@@ -1473,31 +1567,54 @@
   <footer>
     <div class="container footer-content">
       <div class="social-links">
-        <a href="https://www.youtube.com/@saxonuawot" class="social-link" target="_blank"><i class="fab fa-youtube"></i></a>
-        <a href="https://www.twitch.tv/saxon_wot" class="social-link" target="_blank"><i class="fab fa-twitch"></i></a>
-        <a href="https://www.tiktok.com/@saxon_ua_wot" class="social-link" target="_blank"><i class="fab fa-tiktok"></i></a>
-        <a href="https://t.me/wotsaxon" class="social-link" target="_blank"><i class="fab fa-telegram"></i></a>
+        <a href="https://www.youtube.com/@saxonuawot" class="social-link" target="_blank" rel="noopener noreferrer"><i class="fab fa-youtube"></i></a>
+        <a href="https://www.twitch.tv/saxon_wot" class="social-link" target="_blank" rel="noopener noreferrer"><i class="fab fa-twitch"></i></a>
+        <a href="https://www.tiktok.com/@saxon_ua_wot" class="social-link" target="_blank" rel="noopener noreferrer"><i class="fab fa-tiktok"></i></a>
+        <a href="https://t.me/wotsaxon" class="social-link" target="_blank" rel="noopener noreferrer"><i class="fab fa-telegram"></i></a>
       </div>
+
       <div class="logo">
-        <div class="logo-icon"><img src="logo.png" alt="SaXon WOT Logo" class="logo-img"></div>
-        <div class="logo-text"><h1>SaXon WOT</h1><p>WORLD OF TANKS STREAMER</p></div>
+        <div class="logo-icon">
+          <img src="logo.png" alt="SaXon WOT Logo" class="logo-img">
+        </div>
+        <div class="logo-text">
+          <h1>SaXon WOT</h1>
+          <p>WORLD OF TANKS STREAMER</p>
+        </div>
       </div>
+
       <p class="copyright">© 2026</p>
     </div>
   </footer>
 
   <div id="donateModal" class="donate-modal">
     <div class="donate-modal-content">
-      <div class="donate-modal-header"><h3><i class="fas fa-heart"></i> Підтримка</h3><button class="donate-modal-close" id="closeDonateModalBtn">&times;</button></div>
-      <div class="donate-modal-icon"><i class="fas fa-gift"></i></div>
-      <div class="donate-modal-text">Дякую за бажання підтримати канал! Оберіть зручний спосіб:</div>
+      <div class="donate-modal-header">
+        <h3><i class="fas fa-heart"></i> Підтримка</h3>
+        <button class="donate-modal-close" id="closeDonateModalBtn">&times;</button>
+      </div>
+
+      <div class="donate-modal-icon">
+        <i class="fas fa-gift"></i>
+      </div>
+
+      <div class="donate-modal-text">
+        Дякую за бажання підтримати канал! Оберіть зручний спосіб:
+      </div>
+
       <div class="donate-link-display" id="donateLinkDisplay">https://saxon.donatik.ua/</div>
+
       <div class="donate-modal-buttons">
-        <button class="donate-modal-btn open-link" id="modalOpenLinkBtn"><i class="fas fa-external-link-alt"></i> Відкрити донат</button>
-        <button class="donate-modal-btn copy-link" id="modalCopyLinkBtn"><i class="fas fa-copy"></i> Скопіювати посилання</button>
+        <button class="donate-modal-btn open-link" id="modalOpenLinkBtn">
+          <i class="fas fa-external-link-alt"></i> Відкрити донат
+        </button>
+        <button class="donate-modal-btn copy-link" id="modalCopyLinkBtn">
+          <i class="fas fa-copy"></i> Скопіювати посилання
+        </button>
       </div>
     </div>
   </div>
+
   <div id="toastMessage" class="donate-modal-toast"></div>
 
   <script>
@@ -1513,11 +1630,13 @@
     function showToast(message, duration = 2500) {
       toastMsgDiv.textContent = message;
       toastMsgDiv.style.opacity = "1";
-      setTimeout(() => toastMsgDiv.style.opacity = "0", duration);
+      setTimeout(() => {
+        toastMsgDiv.style.opacity = "0";
+      }, duration);
     }
 
     function openDonateModal() {
-      if (donateLinkDisplay) donateLinkDisplay.innerText = DONATE_URL;
+      donateLinkDisplay.textContent = DONATE_URL;
       modalEl.classList.add("open");
       document.body.style.overflow = "hidden";
     }
@@ -1527,20 +1646,38 @@
       document.body.style.overflow = "";
     }
 
-    function handleOpenDonate() { window.open(DONATE_URL, '_blank'); closeDonateModal(); }
-    function handleCopyLink() { navigator.clipboard.writeText(DONATE_URL).then(() => showToast("✅ Посилання скопійовано: " + DONATE_URL, 2000)).catch(() => showToast("❌ Не вдалося скопіювати", 2000)); }
+    function handleOpenDonate() {
+      window.open(DONATE_URL, "_blank", "noopener,noreferrer");
+      closeDonateModal();
+    }
+
+    function handleCopyLink() {
+      navigator.clipboard.writeText(DONATE_URL)
+        .then(() => showToast("✅ Посилання скопійовано: " + DONATE_URL, 2000))
+        .catch(() => showToast("❌ Не вдалося скопіювати", 2000));
+    }
 
     closeModalBtn.addEventListener("click", closeDonateModal);
     modalOpenLink.addEventListener("click", handleOpenDonate);
     modalCopyLink.addEventListener("click", handleCopyLink);
-    modalEl.addEventListener("click", (e) => { if (e.target === modalEl) closeDonateModal(); });
-    document.getElementById("heroDonateBtn").addEventListener("click", (e) => { e.preventDefault(); openDonateModal(); });
-    document.getElementById("gridDonateBtn").addEventListener("click", (e) => { e.preventDefault(); openDonateModal(); });
+    modalEl.addEventListener("click", (e) => {
+      if (e.target === modalEl) closeDonateModal();
+    });
+
+    document.getElementById("heroDonateBtn").addEventListener("click", (e) => {
+      e.preventDefault();
+      openDonateModal();
+    });
+
+    document.getElementById("gridDonateBtn").addEventListener("click", (e) => {
+      e.preventDefault();
+      openDonateModal();
+    });
 
     // ==================== YOUTUBE HYBRID PLAYER ====================
     const CHANNEL_ID = "UCPMbLC6oJmGVXnMjUNp0CXg";
     const API_KEY = "AIzaSyDuSA94sh4h8eV3SN2iJjIGwz85_bG0VEM";
-    
+
     const statusIndicator = document.getElementById("statusIndicator");
     const statusTextEl = document.getElementById("statusText");
     const streamLink = document.getElementById("streamLink");
@@ -1550,176 +1687,366 @@
     const streamSubtitle = document.getElementById("streamSubtitle");
     const playerLabel = document.getElementById("playerLabel");
 
-    let currentVideoId = null;
-    let isLiveNow = false;
+    function setCache(key, data) {
+      localStorage.setItem(key, JSON.stringify({
+        data,
+        timestamp: Date.now()
+      }));
+    }
 
-    // Cache helpers
-    function setCache(key, data, ttl) { localStorage.setItem(key, JSON.stringify({ data, timestamp: Date.now(), ttl })); }
     function getCache(key, maxAge) {
       const cached = localStorage.getItem(key);
       if (!cached) return null;
+
       try {
         const item = JSON.parse(cached);
-        if (Date.now() - item.timestamp < maxAge) return item.data;
-        localStorage.removeItem(key);
-        return null;
-      } catch(e) { localStorage.removeItem(key); return null; }
+        if (Date.now() - item.timestamp < maxAge) {
+          return item.data;
+        }
+      } catch (e) {
+        console.error("Cache parse error:", e);
+      }
+
+      localStorage.removeItem(key);
+      return null;
+    }
+
+    function escapeHtml(str) {
+      return String(str ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function getYoutubeThumb(videoId, preferredThumb) {
+      if (preferredThumb) return preferredThumb;
+      return `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
     }
 
     async function getUploadsPlaylistId() {
-      const cached = getCache("uploadsPlaylistId", 24*60*60*1000);
+      const cached = getCache("uploadsPlaylistId", 24 * 60 * 60 * 1000);
       if (cached) return cached;
+
       const res = await fetch(`https://www.googleapis.com/youtube/v3/channels?key=${API_KEY}&id=${CHANNEL_ID}&part=contentDetails`);
       if (!res.ok) throw new Error("Channels API error");
+
       const data = await res.json();
       const playlistId = data.items?.[0]?.contentDetails?.relatedPlaylists?.uploads;
       if (!playlistId) throw new Error("No uploads playlist");
-      setCache("uploadsPlaylistId", playlistId, 24*60*60*1000);
+
+      setCache("uploadsPlaylistId", playlistId);
       return playlistId;
     }
 
     async function checkLiveStatus() {
+      const cached = getCache("liveStatus", 2 * 60 * 1000);
+      if (cached) return cached;
+
       try {
         const playlistId = await getUploadsPlaylistId();
+
         const playlistRes = await fetch(`https://www.googleapis.com/youtube/v3/playlistItems?key=${API_KEY}&playlistId=${playlistId}&part=snippet&maxResults=1`);
+        if (!playlistRes.ok) throw new Error("Playlist API error");
+
         const playlistData = await playlistRes.json();
         const lastVideoId = playlistData.items?.[0]?.snippet?.resourceId?.videoId;
-        if (!lastVideoId) return { isLive: false, videoId: null, title: null, thumbnail: null };
-        
+
+        if (!lastVideoId) {
+          const result = { isLive: false, videoId: null, title: null, thumbnail: null };
+          setCache("liveStatus", result);
+          return result;
+        }
+
         const videoRes = await fetch(`https://www.googleapis.com/youtube/v3/videos?key=${API_KEY}&part=snippet,liveStreamingDetails&id=${lastVideoId}`);
+        if (!videoRes.ok) throw new Error("Videos API error");
+
         const videoData = await videoRes.json();
         const video = videoData.items?.[0];
-        if (!video) return { isLive: false, videoId: null, title: null, thumbnail: null };
-        
+
+        if (!video) {
+          const result = { isLive: false, videoId: null, title: null, thumbnail: null };
+          setCache("liveStatus", result);
+          return result;
+        }
+
         const lsd = video.liveStreamingDetails;
-        const isLive = lsd?.actualStartTime && !lsd?.actualEndTime;
-        const thumbnail = video.snippet.thumbnails?.maxres?.url || video.snippet.thumbnails?.high?.url;
-        return { isLive, videoId: lastVideoId, title: video.snippet.title, thumbnail };
-      } catch(e) {
+        const isLive = Boolean(lsd?.actualStartTime && !lsd?.actualEndTime);
+        const thumbnail =
+          video.snippet?.thumbnails?.maxres?.url ||
+          video.snippet?.thumbnails?.high?.url ||
+          video.snippet?.thumbnails?.medium?.url ||
+          video.snippet?.thumbnails?.default?.url ||
+          null;
+
+        const result = {
+          isLive,
+          videoId: lastVideoId,
+          title: video.snippet?.title || "",
+          thumbnail
+        };
+
+        setCache("liveStatus", result);
+        return result;
+      } catch (e) {
         console.error("Live check error:", e);
-        return { isLive: false, videoId: null, title: null, thumbnail: null };
+        const result = { isLive: false, videoId: null, title: null, thumbnail: null };
+        setCache("liveStatus", result);
+        return result;
       }
     }
 
     async function getLatestVideos(count = 3) {
-      const cached = getCache("latestVideos", 30*60*1000);
+      const cacheKey = `latestVideos_${count}`;
+      const cached = getCache(cacheKey, 30 * 60 * 1000);
       if (cached) return cached;
+
       try {
         const playlistId = await getUploadsPlaylistId();
         const res = await fetch(`https://www.googleapis.com/youtube/v3/playlistItems?key=${API_KEY}&playlistId=${playlistId}&part=snippet&maxResults=${count}`);
+        if (!res.ok) throw new Error("Playlist items API error");
+
         const data = await res.json();
-        const videos = data.items?.map(item => ({
-          videoId: item.snippet.resourceId.videoId,
-          title: item.snippet.title,
-          publishedAt: item.snippet.publishedAt,
-          thumbnail: item.snippet.thumbnails?.high?.url,
-          link: `https://www.youtube.com/watch?v=${item.snippet.resourceId.videoId}`
-        })) || [];
-        setCache("latestVideos", videos, 30*60*1000);
+
+        const videos = (data.items || []).map(item => {
+          const videoId = item.snippet?.resourceId?.videoId || "";
+          const thumbnail =
+            item.snippet?.thumbnails?.maxres?.url ||
+            item.snippet?.thumbnails?.high?.url ||
+            item.snippet?.thumbnails?.medium?.url ||
+            item.snippet?.thumbnails?.default?.url ||
+            null;
+
+          return {
+            videoId,
+            title: item.snippet?.title || "",
+            publishedAt: item.snippet?.publishedAt || "",
+            thumbnail,
+            link: `https://www.youtube.com/watch?v=${videoId}`
+          };
+        }).filter(video => video.videoId);
+
+        setCache(cacheKey, videos);
         return videos;
-      } catch(e) {
+      } catch (e) {
         console.error("Error loading videos:", e);
         return [];
       }
     }
 
-    // Hybrid player: show preview image, load iframe on click
     function renderHybridPlayer(videoId, title, thumbnailUrl, isLive = false) {
-      currentVideoId = videoId;
-      const container = playerContainer;
-      container.innerHTML = '';
-      
-      const previewDiv = document.createElement('div');
-      previewDiv.className = 'video-preview';
-      previewDiv.style.backgroundImage = `url(${thumbnailUrl})`;
-      previewDiv.style.backgroundSize = 'cover';
-      previewDiv.style.backgroundPosition = 'center';
-      previewDiv.style.cursor = 'pointer';
-      
-      const playBtn = document.createElement('div');
-      playBtn.className = 'play-button';
+      const safeTitle = escapeHtml(title);
+      const finalThumbnail = getYoutubeThumb(videoId, thumbnailUrl);
+
+      playerContainer.innerHTML = "";
+
+      const previewDiv = document.createElement("div");
+      previewDiv.className = "video-preview";
+      previewDiv.style.backgroundImage = `url("${finalThumbnail}")`;
+      previewDiv.setAttribute("role", "button");
+      previewDiv.setAttribute("tabindex", "0");
+      previewDiv.setAttribute("aria-label", isLive ? "Запустити LIVE трансляцію" : "Запустити останній стрім");
+
+      const playBtn = document.createElement("div");
+      playBtn.className = "play-button";
       playBtn.innerHTML = '<i class="fas fa-play"></i>';
-      previewDiv.appendChild(playBtn);
-      
-      previewDiv.addEventListener('click', () => {
-        // Load iframe on user interaction only
-        const iframeContainer = document.createElement('div');
-        iframeContainer.className = 'video-iframe-container';
-        const iframe = document.createElement('iframe');
-        // Use nocookie domain for better privacy and to avoid "suspicious traffic" issues
+
+      const overlay = document.createElement("div");
+      overlay.className = "video-preview-overlay";
+      overlay.innerHTML = `
+        <div class="video-preview-badge ${isLive ? "live" : ""}">
+          ${isLive ? "LIVE ЗАРАЗ" : "ОСТАННІЙ СТРІМ"}
+        </div>
+        <div class="video-preview-title">${safeTitle}</div>
+      `;
+
+      function loadIframe() {
+        const iframeContainer = document.createElement("div");
+        iframeContainer.className = "video-iframe-container";
+
+        const iframe = document.createElement("iframe");
         iframe.src = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&mute=0&rel=0`;
-        iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+        iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
         iframe.allowFullscreen = true;
+        iframe.referrerPolicy = "strict-origin-when-cross-origin";
+        iframe.title = title || "YouTube video player";
+
         iframeContainer.appendChild(iframe);
-        container.innerHTML = '';
-        container.appendChild(iframeContainer);
+        playerContainer.innerHTML = "";
+        playerContainer.appendChild(iframeContainer);
+      }
+
+      previewDiv.addEventListener("click", loadIframe);
+      previewDiv.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          loadIframe();
+        }
       });
-      
-      container.appendChild(previewDiv);
+
+      previewDiv.appendChild(playBtn);
+      previewDiv.appendChild(overlay);
+      playerContainer.appendChild(previewDiv);
     }
 
     async function updateStreamPlayer() {
       const liveStatus = await checkLiveStatus();
-      isLiveNow = liveStatus.isLive;
-      
-      if (isLiveNow && liveStatus.videoId) {
-        // LIVE
+
+      if (liveStatus.isLive && liveStatus.videoId) {
         statusIndicator.className = "status-indicator live";
-        statusTextEl.innerHTML = " <strong>LIVE ЗАРАЗ!</strong>";
+        statusTextEl.innerHTML = "<strong>LIVE ЗАРАЗ!</strong>";
         streamSubtitle.innerHTML = '<i class="fas fa-circle" style="color: #ff3333;"></i> LIVE ЗАРАЗ';
         playerLabel.innerHTML = '<i class="fas fa-broadcast-tower"></i> LIVE зараз';
         playerLabel.classList.add("live");
-        streamLink.href = `https://www.youtube.com/@saxonuawot/live`;
+
+        streamLink.href = "https://www.youtube.com/@saxonuawot/live";
         streamLinkText.textContent = "Дивитись LIVE";
-        
-        const thumbnail = liveStatus.thumbnail || `https://img.youtube.com/vi/${liveStatus.videoId}/maxresdefault.jpg`;
-        renderHybridPlayer(liveStatus.videoId, liveStatus.title, thumbnail, true);
+
+        renderHybridPlayer(
+          liveStatus.videoId,
+          liveStatus.title || "LIVE трансляція",
+          getYoutubeThumb(liveStatus.videoId, liveStatus.thumbnail),
+          true
+        );
       } else {
-        // OFFLINE - show latest stream as preview
         statusIndicator.className = "status-indicator";
-        statusTextEl.innerHTML = " <strong>ЗАРАЗ ОФЛАЙН</strong>";
+        statusTextEl.innerHTML = "<strong>ЗАРАЗ ОФЛАЙН</strong>";
         streamSubtitle.innerHTML = '<i class="fas fa-circle"></i> ОФЛАЙН';
         playerLabel.innerHTML = '<i class="fas fa-video"></i> Останній стрім';
         playerLabel.classList.remove("live");
-        streamLink.href = `https://www.youtube.com/@saxonuawot/streams`;
-        streamLinkText.textContent = "Дивитись останній стрім";
-        
+
         const videos = await getLatestVideos(1);
+
         if (videos && videos.length > 0) {
           const latest = videos[0];
-          const thumbnail = latest.thumbnail || `https://img.youtube.com/vi/${latest.videoId}/maxresdefault.jpg`;
-          renderHybridPlayer(latest.videoId, latest.title, thumbnail, false);
+
+          streamLink.href = latest.link;
+          streamLinkText.textContent = "Дивитись останній стрім";
+
+          renderHybridPlayer(
+            latest.videoId,
+            latest.title || "Останній стрім",
+            getYoutubeThumb(latest.videoId, latest.thumbnail),
+            false
+          );
         } else {
-          playerContainer.innerHTML = `<div style="text-align: center; padding: 40px;"><i class="fas fa-video-slash" style="font-size: 60px; color: var(--grey);"></i><h3>Немає доступних стрімів</h3><a href="https://www.youtube.com/@saxonuawot" class="link-btn" style="margin-top: 20px;">Перейти на канал</a></div>`;
+          streamLink.href = "https://www.youtube.com/@saxonuawot/streams";
+          streamLinkText.textContent = "Перейти на канал";
+
+          playerContainer.innerHTML = `
+            <div style="text-align: center; padding: 40px;">
+              <i class="fas fa-video-slash" style="font-size: 60px; color: var(--grey); margin-bottom: 20px;"></i>
+              <h3>Немає доступних стрімів</h3>
+              <a href="https://www.youtube.com/@saxonuawot" class="link-btn" target="_blank" rel="noopener noreferrer" style="margin-top: 20px;">Перейти на канал</a>
+            </div>
+          `;
         }
       }
     }
 
     async function renderLatestStreams() {
-      latestStreamsContainer.innerHTML = `<div class="loading"><div class="loading-spinner"></div><p>Завантаження стрімів...</p></div>`;
+      latestStreamsContainer.innerHTML = `
+        <div class="loading" style="grid-column: 1 / -1;">
+          <div class="loading-spinner"></div>
+          <p>Завантаження стрімів...</p>
+        </div>
+      `;
+
       const videos = await getLatestVideos(3);
+
       if (videos.length === 0) {
-        latestStreamsContainer.innerHTML = `<div style="text-align: center; padding: 40px;"><i class="fas fa-video-slash" style="font-size: 60px; color: var(--grey);"></i><h3>Завершених стрімів ще немає</h3><a href="https://www.youtube.com/@saxonuawot" class="link-btn" target="_blank">Перейти на канал</a></div>`;
+        latestStreamsContainer.innerHTML = `
+          <div style="grid-column: 1 / -1; text-align: center; padding: 40px;">
+            <i class="fas fa-video-slash" style="font-size: 60px; color: var(--grey); margin-bottom: 20px;"></i>
+            <h3>Завершених стрімів ще немає</h3>
+            <a href="https://www.youtube.com/@saxonuawot" class="link-btn" target="_blank" rel="noopener noreferrer">Перейти на канал</a>
+          </div>
+        `;
         return;
       }
-      let html = '';
+
+      let html = "";
+
       videos.forEach(video => {
-        const formattedDate = new Date(video.publishedAt).toLocaleDateString("uk-UA", { day: "numeric", month: "long", year: "numeric" });
-        html += `<div class="stream-card">
-          <div class="stream-thumbnail"><img src="${video.thumbnail}" alt="${video.title}" loading="lazy"><div class="stream-duration"><i class="fas fa-broadcast-tower"></i> СТРІМ</div></div>
-          <div class="stream-info-content"><h4>${video.title}</h4><div class="stream-meta"><div class="stream-date"><i class="far fa-calendar"></i> ${formattedDate}</div></div>
-          <a href="${video.link}" class="stream-card-btn" target="_blank"><span>Дивитись запис</span><i class="fas fa-play"></i></a></div>
-        </div>`;
+        const formattedDate = video.publishedAt
+          ? new Date(video.publishedAt).toLocaleDateString("uk-UA", {
+              day: "numeric",
+              month: "long",
+              year: "numeric"
+            })
+          : "";
+
+        const thumb = getYoutubeThumb(video.videoId, video.thumbnail);
+        const safeTitle = escapeHtml(video.title);
+
+        html += `
+          <div class="stream-card">
+            <div class="stream-thumbnail">
+              <img
+                src="${thumb}"
+                alt="${safeTitle}"
+                loading="lazy"
+                onerror="this.onerror=null;this.src='https://img.youtube.com/vi/${video.videoId}/hqdefault.jpg';"
+              >
+              <div class="stream-duration">
+                <i class="fas fa-broadcast-tower"></i> СТРІМ
+              </div>
+            </div>
+
+            <div class="stream-info-content">
+              <h4>${safeTitle}</h4>
+
+              <div class="stream-meta">
+                <div class="stream-date">
+                  <i class="far fa-calendar"></i> ${formattedDate}
+                </div>
+              </div>
+
+              <a href="${video.link}" class="stream-card-btn" target="_blank" rel="noopener noreferrer">
+                <span>Дивитись запис</span>
+                <i class="fas fa-play"></i>
+              </a>
+            </div>
+          </div>
+        `;
       });
+
       latestStreamsContainer.innerHTML = html;
     }
 
     function setupMobileMenu() {
       const mobileMenuBtn = document.querySelector(".mobile-menu-btn");
       const navLinks = document.querySelector(".nav-links");
-      mobileMenuBtn.addEventListener("click", () => navLinks.classList.toggle("open"));
-      document.querySelectorAll(".nav-links a").forEach(link => link.addEventListener("click", () => { if (window.innerWidth <= 768) navLinks.classList.remove("open"); }));
-      window.addEventListener('resize', () => { if (window.innerWidth > 768) navLinks.classList.remove('open'); });
+
+      mobileMenuBtn.addEventListener("click", () => {
+        navLinks.classList.toggle("open");
+      });
+
+      document.querySelectorAll(".nav-links a").forEach(link => {
+        link.addEventListener("click", () => {
+          if (window.innerWidth <= 768) {
+            navLinks.classList.remove("open");
+          }
+        });
+      });
+
+      document.addEventListener("click", (e) => {
+        if (
+          window.innerWidth <= 768 &&
+          !navLinks.contains(e.target) &&
+          !mobileMenuBtn.contains(e.target) &&
+          navLinks.classList.contains("open")
+        ) {
+          navLinks.classList.remove("open");
+        }
+      });
+
+      window.addEventListener("resize", () => {
+        if (window.innerWidth > 768) {
+          navLinks.classList.remove("open");
+        }
+      });
     }
 
     function setupSmoothScroll() {
@@ -1727,9 +2054,13 @@
         anchor.addEventListener("click", function(e) {
           const targetId = this.getAttribute("href");
           const targetElement = document.querySelector(targetId);
+
           if (targetElement) {
             e.preventDefault();
-            window.scrollTo({ top: targetElement.offsetTop - 80, behavior: "smooth" });
+            window.scrollTo({
+              top: targetElement.offsetTop - 80,
+              behavior: "smooth"
+            });
           }
         });
       });
@@ -1740,7 +2071,8 @@
       setupSmoothScroll();
       await updateStreamPlayer();
       await renderLatestStreams();
-      setInterval(updateStreamPlayer, 5 * 60 * 1000); // check live every 5 min
+
+      setInterval(updateStreamPlayer, 5 * 60 * 1000);
       setInterval(renderLatestStreams, 30 * 60 * 1000);
     });
   </script>
