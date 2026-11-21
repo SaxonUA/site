@@ -1675,7 +1675,9 @@
     });
 
     // ==================== YOUTUBE HYBRID PLAYER ====================
-    const CHANNEL_ID = "UCYNhD9REc-g99W_lIDddpag";
+    const CHANNEL_HANDLE = "@SaXonWoTua";
+    const CHANNEL_URL = `https://www.youtube.com/${CHANNEL_HANDLE}`;
+    const YOUTUBE_CACHE_PREFIX = `youtube:v2:${CHANNEL_HANDLE.toLowerCase()}:`;
     const API_KEY = "AIzaSyDuSA94sh4h8eV3SN2iJjIGwz85_bG0VEM";
 
     const statusIndicator = document.getElementById("statusIndicator");
@@ -1688,27 +1690,23 @@
     const playerLabel = document.getElementById("playerLabel");
 
     function setCache(key, data) {
-      localStorage.setItem(key, JSON.stringify({
-        data,
-        timestamp: Date.now()
-      }));
+      try {
+        localStorage.setItem(YOUTUBE_CACHE_PREFIX + key, JSON.stringify({
+          data,
+          timestamp: Date.now()
+        }));
+      } catch {
+        // The player also works when browser storage is unavailable.
+      }
     }
 
     function getCache(key, maxAge) {
-      const cached = localStorage.getItem(key);
-      if (!cached) return null;
-
       try {
-        const item = JSON.parse(cached);
-        if (Date.now() - item.timestamp < maxAge) {
-          return item.data;
-        }
-      } catch (e) {
-        console.error("Cache parse error:", e);
+        const item = JSON.parse(localStorage.getItem(YOUTUBE_CACHE_PREFIX + key));
+        return item && Date.now() - item.timestamp < maxAge ? item.data : null;
+      } catch {
+        return null;
       }
-
-      localStorage.removeItem(key);
-      return null;
     }
 
     function escapeHtml(str) {
@@ -1729,7 +1727,7 @@
       const cached = getCache("uploadsPlaylistId", 24 * 60 * 60 * 1000);
       if (cached) return cached;
 
-      const res = await fetch(`https://www.googleapis.com/youtube/v3/channels?key=${API_KEY}&id=${CHANNEL_ID}&part=contentDetails`);
+      const res = await fetch(`https://www.googleapis.com/youtube/v3/channels?key=${API_KEY}&forHandle=${encodeURIComponent(CHANNEL_HANDLE)}&part=contentDetails`);
       if (!res.ok) throw new Error("Channels API error");
 
       const data = await res.json();
@@ -1747,23 +1745,28 @@
       try {
         const playlistId = await getUploadsPlaylistId();
 
-        const playlistRes = await fetch(`https://www.googleapis.com/youtube/v3/playlistItems?key=${API_KEY}&playlistId=${playlistId}&part=snippet&maxResults=1`);
+        const playlistRes = await fetch(`https://www.googleapis.com/youtube/v3/playlistItems?key=${API_KEY}&playlistId=${playlistId}&part=contentDetails&maxResults=12`);
         if (!playlistRes.ok) throw new Error("Playlist API error");
 
         const playlistData = await playlistRes.json();
-        const lastVideoId = playlistData.items?.[0]?.snippet?.resourceId?.videoId;
+        const recentVideoIds = (playlistData.items || [])
+          .map(item => item.contentDetails?.videoId)
+          .filter(Boolean);
 
-        if (!lastVideoId) {
+        if (!recentVideoIds.length) {
           const result = { isLive: false, videoId: null, title: null, thumbnail: null };
           setCache("liveStatus", result);
           return result;
         }
 
-        const videoRes = await fetch(`https://www.googleapis.com/youtube/v3/videos?key=${API_KEY}&part=snippet,liveStreamingDetails&id=${lastVideoId}`);
+        const videoRes = await fetch(`https://www.googleapis.com/youtube/v3/videos?key=${API_KEY}&part=snippet,liveStreamingDetails&id=${recentVideoIds.join(",")}`);
         if (!videoRes.ok) throw new Error("Videos API error");
 
         const videoData = await videoRes.json();
-        const video = videoData.items?.[0];
+        const video = videoData.items?.find(item => {
+          const details = item.liveStreamingDetails;
+          return details?.actualStartTime && !details.actualEndTime;
+        });
 
         if (!video) {
           const result = { isLive: false, videoId: null, title: null, thumbnail: null };
@@ -1771,8 +1774,6 @@
           return result;
         }
 
-        const lsd = video.liveStreamingDetails;
-        const isLive = Boolean(lsd?.actualStartTime && !lsd?.actualEndTime);
         const thumbnail =
           video.snippet?.thumbnails?.maxres?.url ||
           video.snippet?.thumbnails?.high?.url ||
@@ -1781,8 +1782,8 @@
           null;
 
         const result = {
-          isLive,
-          videoId: lastVideoId,
+          isLive: true,
+          videoId: video.id,
           title: video.snippet?.title || "",
           thumbnail
         };
@@ -1791,9 +1792,7 @@
         return result;
       } catch (e) {
         console.error("Live check error:", e);
-        const result = { isLive: false, videoId: null, title: null, thumbnail: null };
-        setCache("liveStatus", result);
-        return result;
+        return { isLive: null };
       }
     }
 
@@ -1831,11 +1830,14 @@
         return videos;
       } catch (e) {
         console.error("Error loading videos:", e);
-        return [];
+        return null;
       }
     }
 
     function renderHybridPlayer(videoId, title, thumbnailUrl, isLive = false) {
+      const currentIframe = playerContainer.querySelector("iframe");
+      if (currentIframe?.dataset.videoId === videoId) return;
+
       const safeTitle = escapeHtml(title);
       const finalThumbnail = getYoutubeThumb(videoId, thumbnailUrl);
 
@@ -1868,6 +1870,7 @@
         const iframe = document.createElement("iframe");
         iframe.src = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&mute=0&rel=0`;
         iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+        iframe.dataset.videoId = videoId;
         iframe.allowFullscreen = true;
         iframe.referrerPolicy = "strict-origin-when-cross-origin";
         iframe.title = title || "YouTube video player";
@@ -1900,7 +1903,7 @@
         playerLabel.innerHTML = '<i class="fas fa-broadcast-tower"></i> LIVE зараз';
         playerLabel.classList.add("live");
 
-        streamLink.href = "https://www.youtube.com/@SaXonWoTua/live";
+        streamLink.href = `${CHANNEL_URL}/live`;
         streamLinkText.textContent = "Дивитись LIVE";
 
         renderHybridPlayer(
@@ -1911,8 +1914,9 @@
         );
       } else {
         statusIndicator.className = "status-indicator";
-        statusTextEl.innerHTML = "<strong>ЗАРАЗ ОФЛАЙН</strong>";
-        streamSubtitle.innerHTML = '<i class="fas fa-circle"></i> ОФЛАЙН';
+        const statusUnknown = liveStatus.isLive === null;
+        statusTextEl.textContent = statusUnknown ? "СТАТУС ЕФІРУ НЕДОСТУПНИЙ" : "ЗАРАЗ ОФЛАЙН";
+        streamSubtitle.textContent = statusUnknown ? "Статус недоступний" : "ОФЛАЙН";
         playerLabel.innerHTML = '<i class="fas fa-video"></i> Останній стрім';
         playerLabel.classList.remove("live");
 
@@ -1931,14 +1935,14 @@
             false
           );
         } else {
-          streamLink.href = "https://www.youtube.com/@SaXonWoTua/streams";
+          streamLink.href = `${CHANNEL_URL}/streams`;
           streamLinkText.textContent = "Перейти на канал";
 
+          if (playerContainer.querySelector("iframe")) return;
           playerContainer.innerHTML = `
-            <div style="text-align: center; padding: 40px;">
-              <i class="fas fa-video-slash" style="font-size: 60px; color: var(--grey); margin-bottom: 20px;"></i>
-              <h3>Немає доступних стрімів</h3>
-              <a href="https://www.youtube.com/@SaXonWoTua" class="link-btn" target="_blank" rel="noopener noreferrer" style="margin-top: 20px;">Перейти на канал</a>
+            <div style="position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: 8px; text-align: center; padding: 16px;">
+              <h3>${videos === null ? "Не вдалося завантажити відео" : "Немає доступних стрімів"}</h3>
+              <a href="${CHANNEL_URL}" class="link-btn" target="_blank" rel="noopener noreferrer" style="margin-top: 20px;">Перейти на канал</a>
             </div>
           `;
         }
@@ -1955,12 +1959,12 @@
 
       const videos = await getLatestVideos(3);
 
-      if (videos.length === 0) {
+      if (!videos?.length) {
         latestStreamsContainer.innerHTML = `
           <div style="grid-column: 1 / -1; text-align: center; padding: 40px;">
             <i class="fas fa-video-slash" style="font-size: 60px; color: var(--grey); margin-bottom: 20px;"></i>
-            <h3>Завершених стрімів ще немає</h3>
-            <a href="https://www.youtube.com/@SaXonWoTua" class="link-btn" target="_blank" rel="noopener noreferrer">Перейти на канал</a>
+            <h3>${videos === null ? "Не вдалося завантажити відео" : "Поки що немає відео"}</h3>
+            <a href="${CHANNEL_URL}" class="link-btn" target="_blank" rel="noopener noreferrer">Перейти на канал</a>
           </div>
         `;
         return;
