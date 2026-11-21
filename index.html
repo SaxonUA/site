@@ -825,6 +825,16 @@
       line-height: 1.3;
     }
 
+    .stream-start-time {
+      margin: 10px 0;
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .video-preview.scheduled {
+      text-decoration: none;
+    }
+
     .stream-info > p {
       font-size: 1.1rem;
       line-height: 1.7;
@@ -1388,7 +1398,7 @@
       </div>
 
       <div class="hero-right">
-        <img src="https://raw.githubusercontent.com/SaxonUA/site/main/saxon.png" alt="Saxon_UA" class="hero-image">
+        <img src="saxon.png" alt="Saxon_UA" class="hero-image">
       </div>
     </div>
   </section>
@@ -1480,6 +1490,11 @@
             <i class="fas fa-arrow-left"></i>
             <span id="streamLinkText">Стрім онлайн або останній стрім</span>
           </a>
+
+          <div class="stream-start-time" id="streamStart" hidden>
+            <i class="far fa-calendar-alt" aria-hidden="true"></i>
+            <time id="streamStartTime"></time>
+          </div>
 
           <p>Приєднуйся до прямої трансляції на YouTube! Коментуй, став питання та спілкуйся з іншими глядачами.</p>
 
@@ -1677,7 +1692,7 @@
     // ==================== YOUTUBE HYBRID PLAYER ====================
     const CHANNEL_HANDLE = "@SaXonWoTua";
     const CHANNEL_URL = `https://www.youtube.com/${CHANNEL_HANDLE}`;
-    const YOUTUBE_CACHE_PREFIX = `youtube:v2:${CHANNEL_HANDLE.toLowerCase()}:`;
+    const YOUTUBE_CACHE_PREFIX = `youtube:v3:${CHANNEL_HANDLE.toLowerCase()}:`;
     const API_KEY = "AIzaSyDuSA94sh4h8eV3SN2iJjIGwz85_bG0VEM";
 
     const statusIndicator = document.getElementById("statusIndicator");
@@ -1688,6 +1703,17 @@
     const latestStreamsContainer = document.getElementById("latestStreamsContainer");
     const streamSubtitle = document.getElementById("streamSubtitle");
     const playerLabel = document.getElementById("playerLabel");
+    const streamStart = document.getElementById("streamStart");
+    const streamStartTime = document.getElementById("streamStartTime");
+    const STREAM_REFRESH_INTERVAL = 2 * 60 * 1000;
+    const streamTimeFormatter = new Intl.DateTimeFormat("uk-UA", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      timeZoneName: "short"
+    });
 
     function setCache(key, data) {
       try {
@@ -1738,128 +1764,87 @@
       return playlistId;
     }
 
-    async function checkLiveStatus() {
-      const cached = getCache("liveStatus", 2 * 60 * 1000);
+    async function getChannelVideos() {
+      const cached = getCache("channelVideos", STREAM_REFRESH_INTERVAL);
       if (cached) return cached;
 
-      try {
-        const playlistId = await getUploadsPlaylistId();
+      const playlistId = await getUploadsPlaylistId();
+      const playlistRes = await fetch(`https://www.googleapis.com/youtube/v3/playlistItems?key=${API_KEY}&playlistId=${playlistId}&part=contentDetails&maxResults=50`);
+      if (!playlistRes.ok) throw new Error(`Playlist API error (${playlistRes.status})`);
 
-        const playlistRes = await fetch(`https://www.googleapis.com/youtube/v3/playlistItems?key=${API_KEY}&playlistId=${playlistId}&part=contentDetails&maxResults=12`);
-        if (!playlistRes.ok) throw new Error("Playlist API error");
+      const playlist = await playlistRes.json();
+      const videoIds = (playlist.items || [])
+        .map(item => item.contentDetails?.videoId)
+        .filter(Boolean);
 
-        const playlistData = await playlistRes.json();
-        const recentVideoIds = (playlistData.items || [])
-          .map(item => item.contentDetails?.videoId)
-          .filter(Boolean);
+      let videos = [];
+      if (videoIds.length) {
+        const videoRes = await fetch(`https://www.googleapis.com/youtube/v3/videos?key=${API_KEY}&id=${videoIds.join(",")}&part=snippet,liveStreamingDetails`);
+        if (!videoRes.ok) throw new Error(`Videos API error (${videoRes.status})`);
 
-        if (!recentVideoIds.length) {
-          const result = { isLive: false, videoId: null, title: null, thumbnail: null };
-          setCache("liveStatus", result);
-          return result;
-        }
-
-        const videoRes = await fetch(`https://www.googleapis.com/youtube/v3/videos?key=${API_KEY}&part=snippet,liveStreamingDetails&id=${recentVideoIds.join(",")}`);
-        if (!videoRes.ok) throw new Error("Videos API error");
-
-        const videoData = await videoRes.json();
-        const video = videoData.items?.find(item => {
-          const details = item.liveStreamingDetails;
-          return details?.actualStartTime && !details.actualEndTime;
-        });
-
-        if (!video) {
-          const result = { isLive: false, videoId: null, title: null, thumbnail: null };
-          setCache("liveStatus", result);
-          return result;
-        }
-
-        const thumbnail =
-          video.snippet?.thumbnails?.maxres?.url ||
-          video.snippet?.thumbnails?.high?.url ||
-          video.snippet?.thumbnails?.medium?.url ||
-          video.snippet?.thumbnails?.default?.url ||
-          null;
-
-        const result = {
-          isLive: true,
-          videoId: video.id,
-          title: video.snippet?.title || "",
-          thumbnail
-        };
-
-        setCache("liveStatus", result);
-        return result;
-      } catch (e) {
-        console.error("Live check error:", e);
-        return { isLive: null };
-      }
-    }
-
-    async function getLatestVideos(count = 3) {
-      const cacheKey = `latestVideos_${count}`;
-      const cached = getCache(cacheKey, 30 * 60 * 1000);
-      if (cached) return cached;
-
-      try {
-        const playlistId = await getUploadsPlaylistId();
-        const res = await fetch(`https://www.googleapis.com/youtube/v3/playlistItems?key=${API_KEY}&playlistId=${playlistId}&part=snippet&maxResults=${count}`);
-        if (!res.ok) throw new Error("Playlist items API error");
-
-        const data = await res.json();
-
-        const videos = (data.items || []).map(item => {
-          const videoId = item.snippet?.resourceId?.videoId || "";
-          const thumbnail =
-            item.snippet?.thumbnails?.maxres?.url ||
-            item.snippet?.thumbnails?.high?.url ||
-            item.snippet?.thumbnails?.medium?.url ||
-            item.snippet?.thumbnails?.default?.url ||
-            null;
+        const data = await videoRes.json();
+        videos = (data.items || []).map(video => {
+          const snippet = video.snippet;
+          const details = video.liveStreamingDetails;
+          const thumbnails = snippet.thumbnails;
+          const isLive = !details?.actualEndTime && Boolean(
+            details?.actualStartTime || snippet.liveBroadcastContent === "live"
+          );
+          const isUpcoming = !details?.actualStartTime && !details?.actualEndTime && Boolean(
+            details?.scheduledStartTime || snippet.liveBroadcastContent === "upcoming"
+          );
 
           return {
-            videoId,
-            title: item.snippet?.title || "",
-            publishedAt: item.snippet?.publishedAt || "",
-            thumbnail,
-            link: `https://www.youtube.com/watch?v=${videoId}`
+            videoId: video.id,
+            title: snippet.title,
+            state: isLive ? "live" : isUpcoming ? "scheduled" : "published",
+            isRecording: Boolean(details?.actualEndTime),
+            scheduledAt: details?.scheduledStartTime || "",
+            publishedAt: details?.actualStartTime || snippet.publishedAt,
+            thumbnail: thumbnails?.maxres?.url || thumbnails?.high?.url || thumbnails?.medium?.url || thumbnails?.default?.url,
+            link: `https://www.youtube.com/watch?v=${video.id}`
           };
-        }).filter(video => video.videoId);
-
-        setCache(cacheKey, videos);
-        return videos;
-      } catch (e) {
-        console.error("Error loading videos:", e);
-        return null;
+        });
       }
+
+      setCache("channelVideos", videos);
+      return videos;
     }
 
-    function renderHybridPlayer(videoId, title, thumbnailUrl, isLive = false) {
+    function renderHybridPlayer(video, label) {
+      const { videoId, title, thumbnail, state, link } = video;
+      const isLive = state === "live";
+      const isScheduled = state === "scheduled";
       const currentIframe = playerContainer.querySelector("iframe");
       if (currentIframe?.dataset.videoId === videoId) return;
 
       const safeTitle = escapeHtml(title);
-      const finalThumbnail = getYoutubeThumb(videoId, thumbnailUrl);
+      const finalThumbnail = getYoutubeThumb(videoId, thumbnail);
 
       playerContainer.innerHTML = "";
 
-      const previewDiv = document.createElement("div");
-      previewDiv.className = "video-preview";
-      previewDiv.style.backgroundImage = `url("${finalThumbnail}")`;
-      previewDiv.setAttribute("role", "button");
-      previewDiv.setAttribute("tabindex", "0");
-      previewDiv.setAttribute("aria-label", isLive ? "Запустити LIVE трансляцію" : "Запустити останній стрім");
+      const preview = document.createElement(isScheduled ? "a" : "div");
+      preview.className = isScheduled ? "video-preview scheduled" : "video-preview";
+      preview.style.backgroundImage = `url("${finalThumbnail}")`;
+      if (isScheduled) {
+        preview.href = link;
+        preview.target = "_blank";
+        preview.rel = "noopener noreferrer";
+        preview.setAttribute("aria-label", "Відкрити запланований стрім на YouTube");
+      } else {
+        preview.setAttribute("role", "button");
+        preview.setAttribute("tabindex", "0");
+        preview.setAttribute("aria-label", isLive ? "Запустити прямий ефір" : "Запустити останнє відео");
+      }
 
       const playBtn = document.createElement("div");
       playBtn.className = "play-button";
-      playBtn.innerHTML = '<i class="fas fa-play"></i>';
+      playBtn.innerHTML = isScheduled ? '<i class="far fa-bell"></i>' : '<i class="fas fa-play"></i>';
 
       const overlay = document.createElement("div");
       overlay.className = "video-preview-overlay";
       overlay.innerHTML = `
-        <div class="video-preview-badge ${isLive ? "live" : ""}">
-          ${isLive ? "LIVE ЗАРАЗ" : "ОСТАННІЙ СТРІМ"}
-        </div>
+        <div class="video-preview-badge ${isLive ? "live" : ""}">${label}</div>
         <div class="video-preview-title">${safeTitle}</div>
       `;
 
@@ -1880,85 +1865,64 @@
         playerContainer.appendChild(iframeContainer);
       }
 
-      previewDiv.addEventListener("click", loadIframe);
-      previewDiv.addEventListener("keydown", (e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          loadIframe();
-        }
-      });
+      if (!isScheduled) {
+        preview.addEventListener("click", loadIframe);
+        preview.addEventListener("keydown", event => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            loadIframe();
+          }
+        });
+      }
 
-      previewDiv.appendChild(playBtn);
-      previewDiv.appendChild(overlay);
-      playerContainer.appendChild(previewDiv);
+      preview.appendChild(playBtn);
+      preview.appendChild(overlay);
+      playerContainer.appendChild(preview);
     }
 
-    async function updateStreamPlayer() {
-      const liveStatus = await checkLiveStatus();
+    function updateStreamPlayer(live, scheduled, latest, statusUnknown = false) {
+      const isLive = Boolean(live);
+      const isScheduled = !isLive && Boolean(scheduled);
+      const selected = live || scheduled || latest;
+      const label = isLive ? "LIVE зараз" : isScheduled ? "Запланований стрім"
+        : latest?.isRecording ? "Останній стрім" : "Останнє відео";
+      const status = isLive ? "LIVE ЗАРАЗ" : isScheduled ? "ЗАПЛАНОВАНИЙ СТРІМ"
+        : statusUnknown ? "Статус недоступний" : "ОФЛАЙН";
 
-      if (liveStatus.isLive && liveStatus.videoId) {
-        statusIndicator.className = "status-indicator live";
-        statusTextEl.innerHTML = "<strong>LIVE ЗАРАЗ!</strong>";
-        streamSubtitle.innerHTML = '<i class="fas fa-circle" style="color: #ff3333;"></i> LIVE ЗАРАЗ';
-        playerLabel.innerHTML = '<i class="fas fa-broadcast-tower"></i> LIVE зараз';
-        playerLabel.classList.add("live");
+      statusIndicator.classList.toggle("live", isLive);
+      playerLabel.classList.toggle("live", isLive);
+      playerLabel.textContent = label;
+      statusTextEl.textContent = status;
+      streamSubtitle.textContent = status;
+      streamLink.href = selected?.link || `${CHANNEL_URL}/streams`;
+      streamLinkText.textContent = isLive ? "Дивитись LIVE" : isScheduled ? "Відкрити стрім на YouTube"
+        : latest?.isRecording ? "Дивитись останній стрім" : latest ? "Дивитись останнє відео" : "Перейти на канал";
 
-        streamLink.href = `${CHANNEL_URL}/live`;
-        streamLinkText.textContent = "Дивитись LIVE";
-
-        renderHybridPlayer(
-          liveStatus.videoId,
-          liveStatus.title || "LIVE трансляція",
-          getYoutubeThumb(liveStatus.videoId, liveStatus.thumbnail),
-          true
-        );
-      } else {
-        statusIndicator.className = "status-indicator";
-        const statusUnknown = liveStatus.isLive === null;
-        statusTextEl.textContent = statusUnknown ? "СТАТУС ЕФІРУ НЕДОСТУПНИЙ" : "ЗАРАЗ ОФЛАЙН";
-        streamSubtitle.textContent = statusUnknown ? "Статус недоступний" : "ОФЛАЙН";
-        playerLabel.innerHTML = '<i class="fas fa-video"></i> Останній стрім';
-        playerLabel.classList.remove("live");
-
-        const videos = await getLatestVideos(1);
-
-        if (videos && videos.length > 0) {
-          const latest = videos[0];
-
-          streamLink.href = latest.link;
-          streamLinkText.textContent = "Дивитись останній стрім";
-
-          renderHybridPlayer(
-            latest.videoId,
-            latest.title || "Останній стрім",
-            getYoutubeThumb(latest.videoId, latest.thumbnail),
-            false
-          );
+      streamStart.hidden = !isScheduled;
+      if (isScheduled) {
+        const scheduledTime = Date.parse(scheduled.scheduledAt);
+        if (Number.isFinite(scheduledTime)) {
+          streamStartTime.dateTime = scheduled.scheduledAt;
+          streamStartTime.textContent = streamTimeFormatter.format(scheduledTime);
         } else {
-          streamLink.href = `${CHANNEL_URL}/streams`;
-          streamLinkText.textContent = "Перейти на канал";
-
-          if (playerContainer.querySelector("iframe")) return;
-          playerContainer.innerHTML = `
-            <div style="position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: 8px; text-align: center; padding: 16px;">
-              <h3>${videos === null ? "Не вдалося завантажити відео" : "Немає доступних стрімів"}</h3>
-              <a href="${CHANNEL_URL}" class="link-btn" target="_blank" rel="noopener noreferrer" style="margin-top: 20px;">Перейти на канал</a>
-            </div>
-          `;
+          streamStartTime.removeAttribute("datetime");
+          streamStartTime.textContent = "Час початку уточнюється";
         }
+      }
+
+      if (selected) {
+        renderHybridPlayer(selected, label);
+      } else if (!playerContainer.querySelector("iframe")) {
+        playerContainer.innerHTML = `
+          <div style="position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: 8px; text-align: center; padding: 16px;">
+            <h3>${statusUnknown ? "Не вдалося завантажити відео" : "Немає доступних відео"}</h3>
+            <a href="${CHANNEL_URL}" class="link-btn" target="_blank" rel="noopener noreferrer">Перейти на канал</a>
+          </div>
+        `;
       }
     }
 
-    async function renderLatestStreams() {
-      latestStreamsContainer.innerHTML = `
-        <div class="loading" style="grid-column: 1 / -1;">
-          <div class="loading-spinner"></div>
-          <p>Завантаження стрімів...</p>
-        </div>
-      `;
-
-      const videos = await getLatestVideos(3);
-
+    function renderLatestStreams(videos) {
       if (!videos?.length) {
         latestStreamsContainer.innerHTML = `
           <div style="grid-column: 1 / -1; text-align: center; padding: 40px;">
@@ -1994,7 +1958,7 @@
                 onerror="this.onerror=null;this.src='https://img.youtube.com/vi/${video.videoId}/hqdefault.jpg';"
               >
               <div class="stream-duration">
-                <i class="fas fa-broadcast-tower"></i> СТРІМ
+                ${video.isRecording ? '<i class="fas fa-broadcast-tower"></i> СТРІМ' : '<i class="fas fa-video"></i> ВІДЕО'}
               </div>
             </div>
 
@@ -2008,7 +1972,7 @@
               </div>
 
               <a href="${video.link}" class="stream-card-btn" target="_blank" rel="noopener noreferrer">
-                <span>Дивитись запис</span>
+                <span>${video.isRecording ? "Дивитись запис" : "Дивитись відео"}</span>
                 <i class="fas fa-play"></i>
               </a>
             </div>
@@ -2070,14 +2034,33 @@
       });
     }
 
-    document.addEventListener("DOMContentLoaded", async () => {
+    async function refreshChannel() {
+      try {
+        const videos = await getChannelVideos();
+        const live = videos.find(video => video.state === "live");
+        const scheduled = videos
+          .filter(video => video.state === "scheduled")
+          .sort((a, b) => (Date.parse(a.scheduledAt) || Infinity) - (Date.parse(b.scheduledAt) || Infinity))[0];
+        const latest = videos
+          .filter(video => video.state === "published")
+          .sort((a, b) => Date.parse(b.publishedAt) - Date.parse(a.publishedAt))
+          .slice(0, 3);
+
+        updateStreamPlayer(live, scheduled, latest[0]);
+        renderLatestStreams(latest);
+      } catch (error) {
+        console.error("YouTube refresh error:", error);
+        updateStreamPlayer(null, null, null, true);
+        renderLatestStreams(null);
+      } finally {
+        setTimeout(refreshChannel, STREAM_REFRESH_INTERVAL);
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
       setupMobileMenu();
       setupSmoothScroll();
-      await updateStreamPlayer();
-      await renderLatestStreams();
-
-      setInterval(updateStreamPlayer, 5 * 60 * 1000);
-      setInterval(renderLatestStreams, 30 * 60 * 1000);
+      refreshChannel();
     });
   </script>
 </body>
